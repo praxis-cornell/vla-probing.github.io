@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decoding Task Progress from VLA Representations</title>
+  <link rel="icon" href="./assets/figures/logo.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+</head>
+
+<body>
+  <!-- Progress Sidebar -->
+  <nav class="progress-sidebar" aria-label="Page progress">
+    <div class="progress-track">
+      <div class="progress-line"></div>
+      <div class="progress-line-fill"></div>
+      <div class="progress-item" data-section="hero">
+        <a href="#">
+          <span class="progress-dot"></span>
+          <span class="progress-label">Intro</span>
+        </a>
+      </div>
+      <div class="progress-item" data-section="definitions">
+        <a href="#definitions">
+          <span class="progress-dot"></span>
+          <span class="progress-label">Definitions</span>
+        </a>
+      </div>
+      <div class="progress-item" data-section="weak">
+        <a href="#weak">
+          <span class="progress-dot"></span>
+          <span class="progress-label">Weak</span>
+        </a>
+      </div>
+      <div class="progress-item" data-section="strong">
+        <a href="#strong">
+          <span class="progress-dot"></span>
+          <span class="progress-label">Strong</span>
+        </a>
+      </div>
+      <div class="progress-item" data-section="steerability">
+        <a href="#steerability">
+          <span class="progress-dot"></span>
+          <span class="progress-label">Steerability</span>
+        </a>
+      </div>
+      <div class="progress-item" data-section="ood">
+        <a href="#ood">
+          <span class="progress-dot"></span>
+          <span class="progress-label">OOD</span>
+        </a>
+      </div>
+      <div class="progress-item" data-section="resources">
+        <a href="#resources">
+          <span class="progress-dot"></span>
+          <span class="progress-label">Resources</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <div class="hero-flow">
+      <div class="hero-orb" aria-hidden="true"></div>
+      <div class="hero-text">Decoding Task Progress from VLA Representations</div>
+      <div class="sub-hero-text">Task progress is linearly readable from a VLA's activations — a lightweight handle
+        for monitoring deployed policies.</div>
+
+      <div class="hero-pill-row">
+        <span class="hero-pill">Vision-Language-Action Models</span>
+        <span class="hero-pill">Mechanistic Interpretability</span>
+        <span class="hero-pill">OOD Detection</span>
+      </div>
+
+      <div class="authors">
+        <a href="https://atikshb.github.io/" target="_blank">Atiksh Bhardwaj</a><sup>*</sup>,
+        <a href="I should make a website" target="_blank">Edward Duan</a><sup>*</sup>,
+        <a href="https://pdan101.github.io/" target="_blank">Prithwish Dan</a>,
+        <a href="https://www.cs.cornell.edu/~weichiu/" target="_blank">Wei-Chiu Ma</a>,
+        <a href="https://pculbertson.github.io/" target="_blank">Preston Culbertson</a><br>
+        <span class="author-note">*Equal contribution &nbsp;·&nbsp; Submitted to CoRL 2026</span>
+        <img src="./assets/figures/cornell-university-logo.png" alt="Cornell University" class="affiliation-logo">
+      </div>
+
+      <div class="hero-actions">
+        <a class="cta primary" href="#" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
+            style="vertical-align: -2px; margin-right: 6px;">
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6zm2-6h8v2H8v-2zm0-4h4v2H8v-2zm0 8h8v2H8v-2z" />
+          </svg>
+          Read the paper
+        </a>
+        <a class="cta dark" href="#" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"
+            style="vertical-align: -3px; margin-right: 6px;">
+            <path
+              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+          </svg>
+          Code
+        </a>
+      </div>
+      <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-top:-16px;">Paper and code links
+        are placeholders — swap in the arXiv / GitHub URLs once available.</p>
+
+      <div class="hero-waves" aria-hidden="true">
+        <svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+          <defs>
+            <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+          </defs>
+          <g class="wave-parallax">
+            <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(212,148,10,0.25)"></use>
+            <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(147,51,234,0.2)"></use>
+            <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(59,130,246,0.18)"></use>
+            <use xlink:href="#gentle-wave" x="48" y="7" fill="rgba(37,99,235,0.25)"></use>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Abstract -->
+    <div class="abstract-block">
+      <h2 class="abstract-heading">Abstract</h2>
+      <p>Vision-language-action models (VLAs) are moving rapidly towards deployment as general-purpose manipulation
+        policies, but we currently lack basic tools for understanding what these models represent internally or for
+        monitoring them at runtime. Leveraging ideas from mechanistic interpretability, we probe the residual stream
+        of π₀.₅ and find that <b>task progress</b>, the normalized time remaining in a trajectory, is linearly
+        readable from the activations. We find that this signal is present in the pretrained PaliGemma backbone prior
+        to training on any robot-specific data. A single linear probe generalizes to unseen tasks and varies under
+        language counterfactuals when trained on multi-prompt data, but does not enable meaningful steering of the
+        policy. These properties make the signal directly useful for instrumenting deployed VLAs. We use the probe as
+        a simple label-free OOD detector, which detects stalled task progress, and find it competitive with
+        state-of-the-art methods. Our results suggest that VLAs have rich, linearly readable internal representations
+        of semantic quantities like task progress, and that learning to read these signals offers a lightweight,
+        interpretable path toward monitoring deployed visuomotor policies.</p>
+    </div>
+
+    <!-- Teaser Figure -->
+    <img src="./assets/figures/Overview.svg?v=2" alt="Overview figure: dataset, activation extraction, probe training, and downstream tasks" class="teaser-image" />
+
+    <p class="figure-caption">
+      <b>Task progress is linearly readable from π₀.₅'s internal activations.</b> We cache residual-stream embeddings
+      zⁱ from every layer of π₀.₅ as it runs, then fit a linear probe φ(zⁱ) = wᵀzⁱ + b to predict task progress τ —
+      the normalized fraction of the trajectory remaining.
+    </p>
+
+    <div class="tagline" id="definitions">Three Definiitions</div>
+    <p class="section-note"
+      style="text-align:center; color:var(--text-muted); font-size:14px; max-width:720px; margin:-8px auto 8px;">
+      "Representation" can mean three increasingly strong things.
+    </p>
+
+    <div class="def-grid">
+      <div class="def-card level-1">
+        <div class="def-head">
+          <span class="def-index">01</span>
+          <div class="def-meter"><span class="on"></span><span></span><span></span></div>
+        </div>
+        <div class="def-eyebrow">Can we read it?</div>
+        <h3 class="def-title">Weak Decodability</h3>
+        <p class="def-body">A linear probe recovers progress from in-distribution activations.</p>
+      </div>
+
+      <div class="def-card level-2">
+        <div class="def-head">
+          <span class="def-index">02</span>
+          <div class="def-meter"><span class="on"></span><span class="on"></span><span></span></div>
+        </div>
+        <div class="def-eyebrow">Does it track the right inputs?</div>
+        <h3 class="def-title">Strong Decodability</h3>
+        <p class="def-body">The same probe still holds when we perturb the inputs progress depends on — swapping the
+          target noun in the instruction.</p>
+      </div>
+
+      <div class="def-card level-3">
+        <div class="def-head">
+          <span class="def-index">03</span>
+          <div class="def-meter"><span class="on"></span><span class="on"></span><span class="on"></span></div>
+        </div>
+        <div class="def-eyebrow">Does the model act on it?</div>
+        <h3 class="def-title">Steerability</h3>
+        <p class="def-body">Editing the feature along w changes the policy's behavior. It does not.</p>
+      </div>
+    </div>
+
+    <!-- ==================== VISUAL 1 — WEAK ==================== -->
+    <div class="tagline" id="weak">Reading Progress Off a Rollout</div>
+    <div class="card-surface">
+      <div class="section-heading">Weak Decodability</div>
+      <p class="section-lead">Watch the probe track the episode in real time. The trace is the probe's estimate of
+        how much of the task is left, drawn as the rollout plays.</p>
+
+      <div class="placeholder-video">
+        <span class="placeholder-badge">PLACEHOLDER — Visual 1</span>
+        <div class="placeholder-video-body">
+          <div class="placeholder-video-title">Rollout video + synced progress trace</div>
+          <ul>
+            <li>>INSERT VIDEO HERE< let user choose task, show side by side video of rollout and task progress (across layers, perhaps)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VISUAL 2 — STRONG ==================== -->
+    <div class="tagline" id="strong">Does It Read the Instruction?</div>
+    <div class="card-surface">
+      <div class="section-heading">Strong Decodability</div>
+      <p class="section-lead">Same episode, same probe — but swap the target noun in the instruction. A probe that
+        genuinely tracks progress should notice. A naive one doesn't.</p>
+
+      <div class="placeholder-video">
+        <span class="placeholder-badge">PLACEHOLDER — Visual 2</span>
+        <div class="placeholder-video-body">
+          <div class="placeholder-video-title">Same rollout, toggled traces</div>
+          <ul>
+            <li>>INSERT VIDEO HERE< Like, 1, but with swapped language inputs. Show naiive probe doesnt track, but counterfactual one does.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="figure-caption">Caption TBD — the naive probe barely moves under the swap; the counterfactually
+        trained one pins near τ = 1.0.</p>
+    </div>
+
+    <!-- ==================== STEERABILITY (optional) ==================== -->
+    <div class="tagline" id="steerability">Observable ≠ Controllable</div>
+    <div class="card-surface">
+      <div class="section-heading">Steerability</div>
+      <p class="section-lead">Injecting a boosted progress value along the probe direction does not push the policy
+        toward the behavior that value implies. Progress is readable but not a control handle.</p>
+
+      <div class="placeholder-video">
+        <span class="placeholder-badge">PLACEHOLDER — Visual 3 (optional)</span>
+        <div class="placeholder-video-body">
+          <div class="placeholder-video-title">Injected rollout vs. real future</div>
+          <ul>
+            <li>Not sure what video to put here, maybe just a graph showing failure is fine.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="figure-caption">Caption TBD — the injection doesn't propagate to later layers, and actions stay far
+        from ground truth.</p>
+    </div>
+
+    <!-- ==================== VISUAL 3 — OOD ==================== -->
+    <div class="tagline" id="ood">When Does Each Detector Notice?</div>
+    <div class="card-surface">
+      <div class="section-heading">Out-of-Distribution Detection</div>
+      <p class="section-lead">A perturbation is injected partway through the episode. Every detector eventually
+        flags it — the question is how many frames late, and how often they cry wolf before anything happens.</p>
+
+      <div class="placeholder-video">
+        <span class="placeholder-badge">PLACEHOLDER — Visual 4</span>
+        <div class="placeholder-video-body">
+          <div class="placeholder-video-title">Rollout + per-detector flag timeline</div>
+          <ul>
+            <li>>INSERT VIDEO HERE< OOD detection, maybe comparing to other baselines, and when each detects OOD?</li>
+          </ul>
+        </div>
+      </div>
+      <p class="figure-caption"></p>
+    </div>
+
+
+    <div class="tagline" id="resources">Resources</div>
+    <div class="card-surface resources-card">
+      <div class="resources-grid">
+        <div class="resource-item">
+          <div class="resource-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6zm2-6h8v2H8v-2zm0-4h4v2H8v-2zm0 8h8v2H8v-2z" />
+            </svg>
+          </div>
+          <h3>Paper</h3>
+          <p>Decoding Task Progress from VLA Representations — submitted to the 10th Conference on Robot Learning
+            (CoRL 2026).</p>
+          <a href="#" target="_blank" class="resource-link">
+            Read on arXiv (placeholder)
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M7 17L17 7M17 7H7M17 7V17" />
+            </svg>
+          </a>
+        </div>
+        <div class="resource-item">
+          <div class="resource-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+            </svg>
+          </div>
+          <h3>Code</h3>
+          <p>Probe training, activation extraction, and OOD detection code for reproducing our experiments on
+            π₀.₅ and π₀.</p>
+          <a href="#" target="_blank" class="resource-link">
+            View on GitHub (placeholder)
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M7 17L17 7M17 7H7M17 7V17" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tagline" id="bibtex">BibTeX</div>
+    <div class="bibtex-code">
+      <div class="bibtex-title">Reference</div>
+      <pre><code>@inproceedings{bhardwaj2026decoding,
+      title={Decoding Task Progress from VLA Representations},
+      author={Bhardwaj, Atiksh and Duan, Edward and Dan, Prithwish and Ma, Wei-Chiu and Culbertson, Preston},
+      booktitle={Conference on Robot Learning (CoRL)},
+      year={2026}
+}
+      </code></pre>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2026 the authors. Source code for this website is available <a
+      href="https://github.com/Edolphin232/vla-probing.github.io" target="_blank">here</a>.
+  </div>
+
+  <script>
+    // Progress Sidebar
+    document.addEventListener('DOMContentLoaded', () => {
+      const progressItems = document.querySelectorAll('.progress-item');
+      const progressLineFill = document.querySelector('.progress-line-fill');
+      const progressTrack = document.querySelector('.progress-track');
+
+      // Build sections array from progress items to ensure they match
+      const sections = [];
+      progressItems.forEach(item => {
+        const id = item.dataset.section;
+        let el;
+        if (id === 'hero') {
+          el = document.querySelector('.hero-flow');
+        } else {
+          el = document.getElementById(id);
+        }
+        if (el) {
+          sections.push({ id, el });
+        }
+      });
+
+      const updateProgress = () => {
+        if (sections.length === 0) return;
+
+        const viewportHeight = window.innerHeight;
+        const activationThreshold = viewportHeight * 0.35;
+
+        // Find active section index
+        let activeIdx = 0;
+        for (let idx = 0; idx < sections.length; idx++) {
+          const rect = sections[idx].el.getBoundingClientRect();
+          if (rect.top <= activationThreshold) {
+            activeIdx = idx;
+          } else {
+            break;
+          }
+        }
+
+        // Update progress line fill based on active section
+        if (progressLineFill && progressTrack) {
+          const trackHeight = progressTrack.offsetHeight;
+          const maxFillHeight = trackHeight - 44; // Account for top/bottom padding
+          const fillHeight = (activeIdx / Math.max(sections.length - 1, 1)) * maxFillHeight;
+          progressLineFill.style.height = `${Math.min(Math.max(fillHeight, 0), maxFillHeight)}px`;
+        }
+
+        // Update dot states
+        progressItems.forEach(item => {
+          const sectionId = item.dataset.section;
+          const sectionIdx = sections.findIndex(s => s.id === sectionId);
+
+          item.classList.remove('active', 'passed');
+          if (sectionIdx === activeIdx) {
+            item.classList.add('active');
+          } else if (sectionIdx >= 0 && sectionIdx < activeIdx) {
+            item.classList.add('passed');
+          }
+        });
+      };
+
+      window.addEventListener('scroll', updateProgress, { passive: true });
+      updateProgress();
+    });
+  </script>
+</body>
+
+</html>
