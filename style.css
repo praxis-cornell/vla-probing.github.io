@@ -907,6 +907,18 @@ a#figure-3-img img {
   margin: 0 0 12px 0;
 }
 
+.def-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 10px;
+  box-sizing: border-box;
+  margin: 0 0 16px 0;
+}
+
 .def-body {
   font-size: 14px;
   color: var(--text-secondary);
@@ -987,6 +999,30 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+}
+
+.rollout-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 24px 0 4px 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  background: #000;
+}
+
+.rollout-figure {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 24px 0 4px 0;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  background: #ffffff;
 }
 
 /* Video Placeholders (bones — replace with real <video> blocks) */

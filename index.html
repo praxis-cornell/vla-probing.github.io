@@ -81,7 +81,7 @@
         <span class="hero-pill">Mechanistic Interpretability</span>
         <span class="hero-pill">OOD Detection</span>
       </div>
-
+<!-- we can discuss author order -->
       <div class="authors">
         <a href="https://atikshb.github.io/" target="_blank">Atiksh Bhardwaj</a><sup>*</sup>,
         <a href="I should make a website" target="_blank">Edward Duan</a><sup>*</sup>,
@@ -169,6 +169,7 @@
         </div>
         <div class="def-eyebrow">Can we read it?</div>
         <h3 class="def-title">Weak Decodability</h3>
+        <img src="./assets/figures/weak_decode.png" alt="A linear probe reads mug height (task progress) from the model's activations" class="def-image" />
         <p class="def-body">A linear probe recovers progress from in-distribution activations.</p>
       </div>
 
@@ -179,6 +180,7 @@
         </div>
         <div class="def-eyebrow">Does it track the right inputs?</div>
         <h3 class="def-title">Strong Decodability</h3>
+        <img src="./assets/figures/strong_decode.png" alt="Swapping the target object changes the probe's reading, confirming it tracks the instruction" class="def-image" />
         <p class="def-body">The same probe still holds when we perturb the inputs progress depends on — swapping the
           target noun in the instruction.</p>
       </div>
@@ -190,6 +192,7 @@
         </div>
         <div class="def-eyebrow">Does the model act on it?</div>
         <h3 class="def-title">Steerability</h3>
+        <img src="./assets/figures/steerability.png" alt="Editing the probe direction to steer the model's readout of task progress" class="def-image" />
         <p class="def-body">Editing the feature along w changes the policy's behavior. It does not.</p>
       </div>
     </div>
@@ -201,15 +204,8 @@
       <p class="section-lead">Watch the probe track the episode in real time. The trace is the probe's estimate of
         how much of the task is left, drawn as the rollout plays.</p>
 
-      <div class="placeholder-video">
-        <span class="placeholder-badge">PLACEHOLDER — Visual 1</span>
-        <div class="placeholder-video-body">
-          <div class="placeholder-video-title">Rollout video + synced progress trace</div>
-          <ul>
-            <li>>INSERT VIDEO HERE< let user choose task, show side by side video of rollout and task progress (across layers, perhaps)</li>
-          </ul>
-        </div>
-      </div>
+      <video class="rollout-video" src="./assets/videos/weak_decode_vid.mp4" controls loop muted playsinline
+        preload="metadata"></video>
     </div>
 
     <!-- ==================== VISUAL 2 — STRONG ==================== -->
@@ -219,15 +215,8 @@
       <p class="section-lead">Same episode, same probe — but swap the target noun in the instruction. A probe that
         genuinely tracks progress should notice. A naive one doesn't.</p>
 
-      <div class="placeholder-video">
-        <span class="placeholder-badge">PLACEHOLDER — Visual 2</span>
-        <div class="placeholder-video-body">
-          <div class="placeholder-video-title">Same rollout, toggled traces</div>
-          <ul>
-            <li>>INSERT VIDEO HERE< Like, 1, but with swapped language inputs. Show naiive probe doesnt track, but counterfactual one does.</li>
-          </ul>
-        </div>
-      </div>
+      <video class="rollout-video" src="./assets/videos/strong_decode_vid.mp4" controls loop muted playsinline
+        preload="metadata"></video>
       <p class="figure-caption">Caption TBD — the naive probe barely moves under the swap; the counterfactually
         trained one pins near τ = 1.0.</p>
     </div>
@@ -239,17 +228,11 @@
       <p class="section-lead">Injecting a boosted progress value along the probe direction does not push the policy
         toward the behavior that value implies. Progress is readable but not a control handle.</p>
 
-      <div class="placeholder-video">
-        <span class="placeholder-badge">PLACEHOLDER — Visual 3 (optional)</span>
-        <div class="placeholder-video-body">
-          <div class="placeholder-video-title">Injected rollout vs. real future</div>
-          <ul>
-            <li>Not sure what video to put here, maybe just a graph showing failure is fine.</li>
-          </ul>
-        </div>
-      </div>
-      <p class="figure-caption">Caption TBD — the injection doesn't propagate to later layers, and actions stay far
-        from ground truth.</p>
+      <img src="./assets/figures/steerability_failure.png"
+        alt="Left: the injected progress push decays almost immediately across layers. Right: actions under injection stay far from the demonstration, well above the policy's normal action distance floor."
+        class="rollout-figure" />
+      <p class="figure-caption">The injection doesn't propagate to later layers (left), and actions stay far
+        from ground truth (right).</p>
     </div>
 
     <!-- ==================== VISUAL 3 — OOD ==================== -->
@@ -259,15 +242,8 @@
       <p class="section-lead">A perturbation is injected partway through the episode. Every detector eventually
         flags it — the question is how many frames late, and how often they cry wolf before anything happens.</p>
 
-      <div class="placeholder-video">
-        <span class="placeholder-badge">PLACEHOLDER — Visual 4</span>
-        <div class="placeholder-video-body">
-          <div class="placeholder-video-title">Rollout + per-detector flag timeline</div>
-          <ul>
-            <li>>INSERT VIDEO HERE< OOD detection, maybe comparing to other baselines, and when each detects OOD?</li>
-          </ul>
-        </div>
-      </div>
+      <video class="rollout-video" src="./assets/videos/ood_detection.mp4" controls loop muted playsinline
+        preload="metadata"></video>
       <p class="figure-caption"></p>
     </div>
 
