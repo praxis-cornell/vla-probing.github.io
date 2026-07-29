@@ -161,40 +161,41 @@
       "Representation" can mean three increasingly strong things.
     </p>
 
-    <div class="def-grid">
-      <div class="def-card level-1">
+    <div class="carousel carousel--swap">
+      <div class="carousel-shell def-card-shell level-1">
         <div class="def-head">
           <span class="def-index">01</span>
           <div class="def-meter"><span class="on"></span><span></span><span></span></div>
         </div>
-        <div class="def-eyebrow">Can we read it?</div>
-        <h3 class="def-title">Weak Decodability</h3>
-        <img src="./assets/figures/weak_decode.png" alt="A linear probe reads mug height (task progress) from the model's activations" class="def-image" />
-        <p class="def-body">A linear probe recovers progress from in-distribution activations.</p>
-      </div>
+        <div class="carousel-viewport">
+          <div class="carousel-track">
+            <div class="carousel-slide" data-level="1">
+              <div class="def-eyebrow">Can we read it?</div>
+              <h3 class="def-title">Weak Decodability</h3>
+              <img src="./assets/figures/weak_decode.png" alt="A linear probe reads mug height (task progress) from the model's activations" class="def-image" />
+              <p class="def-body">A linear probe recovers progress from in-distribution activations.</p>
+            </div>
 
-      <div class="def-card level-2">
-        <div class="def-head">
-          <span class="def-index">02</span>
-          <div class="def-meter"><span class="on"></span><span class="on"></span><span></span></div>
-        </div>
-        <div class="def-eyebrow">Does it track the right inputs?</div>
-        <h3 class="def-title">Strong Decodability</h3>
-        <img src="./assets/figures/strong_decode.png" alt="Swapping the target object changes the probe's reading, confirming it tracks the instruction" class="def-image" />
-        <p class="def-body">The same probe still holds when we perturb the inputs progress depends on — swapping the
-          target noun in the instruction.</p>
-      </div>
+            <div class="carousel-slide" data-level="2">
+              <div class="def-eyebrow">Does it track the right inputs?</div>
+              <h3 class="def-title">Strong Decodability</h3>
+              <img src="./assets/figures/strong_decode.png" alt="Swapping the target object changes the probe's reading, confirming it tracks the instruction" class="def-image" />
+              <p class="def-body">The same probe still holds when we perturb the inputs progress depends on —
+                swapping the target noun in the instruction.</p>
+            </div>
 
-      <div class="def-card level-3">
-        <div class="def-head">
-          <span class="def-index">03</span>
-          <div class="def-meter"><span class="on"></span><span class="on"></span><span class="on"></span></div>
+            <div class="carousel-slide" data-level="3">
+              <div class="def-eyebrow">Does the model act on it?</div>
+              <h3 class="def-title">Steerability</h3>
+              <img src="./assets/figures/steerability.png" alt="Editing the probe direction to steer the model's readout of task progress" class="def-image" />
+              <p class="def-body">Editing the feature along w changes the policy's behavior. It does not.</p>
+            </div>
+          </div>
         </div>
-        <div class="def-eyebrow">Does the model act on it?</div>
-        <h3 class="def-title">Steerability</h3>
-        <img src="./assets/figures/steerability.png" alt="Editing the probe direction to steer the model's readout of task progress" class="def-image" />
-        <p class="def-body">Editing the feature along w changes the policy's behavior. It does not.</p>
       </div>
+      <button type="button" class="carousel-arrow carousel-prev" aria-label="Previous definition">‹</button>
+      <button type="button" class="carousel-arrow carousel-next" aria-label="Next definition">›</button>
+      <div class="carousel-dots"></div>
     </div>
 
     <!-- ==================== VISUAL 1 — WEAK ==================== -->
@@ -223,6 +224,24 @@
             aria-label="Scrub through rollout" />
           <span class="scrubber-counter">1 / 152</span>
         </div>
+      </div>
+
+      <div class="carousel">
+        <div class="carousel-viewport">
+          <div class="carousel-track">
+            <figure class="carousel-slide">
+              <img src="./assets/figures/weak_1.png" alt="Probe test MAE by layer index across backbone components, and by probe hidden-layer capacity" />
+              <figcaption>Probe accuracy by layer and by capacity — deeper vision-encoder layers and small probes generalize best; more capacity doesn't help.</figcaption>
+            </figure>
+            <figure class="carousel-slide">
+              <img src="./assets/figures/weak_2.png" alt="Predicted vs. ground-truth task progress over the episode for PaliGemma, base and fine-tuned pi_0.5, and fine-tuned pi_0" />
+              <figcaption>Predicted vs. ground-truth progress across models — fine-tuning sharpens the probe's fit (MAE drops from 0.123 to 0.044).</figcaption>
+            </figure>
+          </div>
+        </div>
+        <button type="button" class="carousel-arrow carousel-prev" aria-label="Previous figure">‹</button>
+        <button type="button" class="carousel-arrow carousel-next" aria-label="Next figure">›</button>
+        <div class="carousel-dots"></div>
       </div>
     </div>
 
@@ -253,6 +272,20 @@
           <span class="scrubber-counter">1 / 230</span>
         </div>
       </div>
+
+      <div class="carousel">
+        <div class="carousel-viewport">
+          <div class="carousel-track">
+            <figure class="carousel-slide">
+              <img src="./assets/figures/strong_1.png" alt="Predicted task progress across replans for the original and target-swapped instruction, comparing a probe trained on the naive dataset against one trained with counterfactuals" />
+              <figcaption>Trained on the naive dataset (left), the probe barely reacts to the swapped target — it isn't actually reading the instruction. Trained with counterfactuals (right), the swapped-target trace diverges sharply from the original.</figcaption>
+            </figure>
+          </div>
+        </div>
+        <button type="button" class="carousel-arrow carousel-prev" aria-label="Previous figure">‹</button>
+        <button type="button" class="carousel-arrow carousel-next" aria-label="Next figure">›</button>
+        <div class="carousel-dots"></div>
+      </div>
       <p class="figure-caption">Caption TBD — the naive probe barely moves under the swap; the counterfactually
         trained one pins near τ = 1.0.</p>
     </div>
@@ -278,6 +311,13 @@
       <p class="section-lead">A perturbation is injected partway through the episode. Every detector eventually
         flags it — the question is how many frames late, and how often they cry wolf before anything happens.</p>
 
+      <img src="./assets/figures/ood_overview.png"
+        alt="Overview: the readable progress signal tracks the expected trend in-distribution, then stagnates or reverses once the rollout goes out of distribution, flagging the failure"
+        class="rollout-figure" />
+      <p class="figure-caption">The readable progress signal tracks the expected trend in-distribution; once the
+        rollout goes OOD (gaussian noise, color shift, blur, occlusion), it stagnates or reverses instead — that gap
+        is the detection signal.</p>
+
       <div class="scrubber" data-dir="./assets/frames/ood" data-count="201" data-fps="10" data-digits="4"
         data-ext="jpg" data-width="1152" data-height="480">
         <div class="scrubber-frame">
@@ -297,6 +337,24 @@
             aria-label="Scrub through rollout" />
           <span class="scrubber-counter">1 / 201</span>
         </div>
+      </div>
+
+      <div class="carousel">
+        <div class="carousel-viewport">
+          <div class="carousel-track">
+            <figure class="carousel-slide">
+              <img src="./assets/figures/qualitative_ood.png" alt="Predicted task progress for an in-distribution episode versus OOD injection at 25%, 50%, and 75% through the rollout, with the detected onset k marked" />
+              <figcaption>Injecting OOD partway through a rollout: the probe trace tracks the expected line until the injection point, then stagnates or spikes — the detector flags onset k frames later.</figcaption>
+            </figure>
+            <figure class="carousel-slide">
+              <img src="./assets/figures/cross-ood.png" alt="Cross-OOD generalization AUROC across six task/mode combinations, comparing the progress-probe detector V_tau against SAFE-MLP and SAFE-LSTM baselines on trained versus held-out OOD modes" />
+              <figcaption>The probe-based detector (V_τ) generalizes to held-out OOD modes it was never trained on, matching or beating baselines that were trained on all modes.</figcaption>
+            </figure>
+          </div>
+        </div>
+        <button type="button" class="carousel-arrow carousel-prev" aria-label="Previous figure">‹</button>
+        <button type="button" class="carousel-arrow carousel-next" aria-label="Next figure">›</button>
+        <div class="carousel-dots"></div>
       </div>
       <p class="figure-caption"></p>
     </div>
@@ -363,6 +421,7 @@
   </div>
 
   <script src="./assets/js/scrubber.js"></script>
+  <script src="./assets/js/carousel.js"></script>
 
   <script>
     // Progress Sidebar

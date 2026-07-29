@@ -818,43 +818,64 @@ a#figure-3-img img {
   padding: 0 8px;
 }
 
-/* Definitions Grid */
-.def-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin: 28px 0 8px 0;
-  align-items: stretch;
+/* Definitions Carousel */
+/* Swap mode: one fixed card frame (.carousel-shell). Content doesn't slide
+   as a track — instead the outgoing slide is pushed off one edge while the
+   incoming slide is animated in from the other, both driven from JS via
+   inline transforms so only two slides ever animate at once. */
+.carousel--swap .carousel-viewport {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: hidden;
 }
 
-.def-card {
+.carousel--swap .carousel-track {
+  display: grid;
+}
+
+.carousel--swap .carousel-slide {
+  grid-area: 1 / 1;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(0);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.carousel--swap .carousel-slide.is-active {
+  pointer-events: auto;
+}
+
+.def-card-shell {
   position: relative;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 24px;
-  padding: 28px;
+  border-radius: 28px;
+  padding: 48px 56px;
   box-shadow: var(--shadow-md);
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s ease;
+  max-width: 900px;
+  margin: 0 auto;
+  transition: box-shadow 0.3s ease;
 }
 
-.def-card::before {
+.def-card-shell::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 5px;
+  transition: background 0.35s ease;
 }
 
-.def-card.level-1::before { background: var(--honey-bronze); }
-.def-card.level-2::before { background: var(--neon-violet); }
-.def-card.level-3::before { background: var(--blue-energy); }
+.def-card-shell.level-1::before { background: var(--honey-bronze); }
+.def-card-shell.level-2::before { background: var(--neon-violet); }
+.def-card-shell.level-3::before { background: var(--blue-energy); }
 
-.def-card:hover {
-  transform: translateY(-4px);
+.def-card-shell:hover {
   box-shadow: var(--shadow-lg);
 }
 
@@ -862,49 +883,64 @@ a#figure-3-img img {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 22px;
 }
 
 .def-index {
   font-family: 'Space Grotesk', -apple-system, sans-serif;
-  font-size: 28px;
+  font-size: 36px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-primary);
   opacity: 0.14;
 }
 
+.def-index.is-updating {
+  animation: defIndexPop 0.4s ease;
+}
+
+@keyframes defIndexPop {
+  0% { transform: scale(0.7); opacity: 0.5; }
+  55% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.14; }
+}
+
 .def-meter {
   display: flex;
-  gap: 5px;
+  gap: 6px;
 }
 
 .def-meter span {
-  width: 22px;
-  height: 5px;
+  width: 28px;
+  height: 6px;
   border-radius: 3px;
   background: var(--border-light);
+  transition: background 0.35s ease, transform 0.35s ease;
 }
 
-.def-card.level-1 .def-meter span.on { background: var(--honey-bronze); }
-.def-card.level-2 .def-meter span.on { background: var(--neon-violet); }
-.def-card.level-3 .def-meter span.on { background: var(--blue-energy); }
+.def-card-shell.level-1 .def-meter span.on { background: var(--honey-bronze); }
+.def-card-shell.level-2 .def-meter span.on { background: var(--neon-violet); }
+.def-card-shell.level-3 .def-meter span.on { background: var(--blue-energy); }
+
+.def-card-shell .def-meter span.on {
+  transform: scaleY(1.3);
+}
 
 .def-eyebrow {
   font-family: 'Fira Code', monospace;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.02em;
   color: var(--text-muted);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .def-title {
   font-family: 'Space Grotesk', -apple-system, sans-serif;
-  font-size: 20px;
+  font-size: 30px;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 12px 0;
+  margin: 0 0 18px 0;
 }
 
 .def-image {
@@ -913,28 +949,22 @@ a#figure-3-img img {
   height: auto;
   background: #ffffff;
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  padding: 10px;
+  border-radius: 14px;
+  padding: 16px;
   box-sizing: border-box;
-  margin: 0 0 16px 0;
+  margin: 0 0 22px 0;
 }
 
 .def-body {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.7;
   margin: 0 0 16px 0;
 }
 
 .def-body em {
   color: var(--text-primary);
   font-style: italic;
-}
-
-@media (max-width: 900px) {
-  .def-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* Responsive */
@@ -1012,6 +1042,129 @@ html {
   border-radius: 20px;
   box-shadow: var(--shadow-md);
   background: #ffffff;
+}
+
+/* Click-through Figure Carousel */
+.carousel {
+  position: relative;
+  margin: 24px 0 4px 0;
+}
+
+.carousel--swap {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.carousel-viewport {
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  background: #ffffff;
+}
+
+.carousel-track {
+  display: flex;
+  align-items: center;
+  transition: transform 0.35s ease;
+}
+
+.carousel-slide {
+  flex: 0 0 100%;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.carousel-slide img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.carousel-slide figcaption {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.carousel-arrow:hover {
+  border-color: var(--honey-bronze);
+  color: var(--honey-bronze);
+}
+
+.carousel-prev {
+  left: -18px;
+}
+
+.carousel-next {
+  right: -18px;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--border-light);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.carousel-dot.is-active {
+  background: var(--honey-bronze);
+  width: 22px;
+  border-radius: 4px;
+}
+
+@media (max-width: 700px) {
+  .carousel-arrow {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  .carousel-prev {
+    left: 4px;
+  }
+
+  .carousel-next {
+    right: 4px;
+  }
 }
 
 /* Frame-sequence Scrubber */
