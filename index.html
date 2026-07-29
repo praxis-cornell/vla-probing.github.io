@@ -204,8 +204,26 @@
       <p class="section-lead">Watch the probe track the episode in real time. The trace is the probe's estimate of
         how much of the task is left, drawn as the rollout plays.</p>
 
-      <video class="rollout-video" src="./assets/videos/weak_decode_vid.mp4" controls loop muted playsinline
-        preload="metadata"></video>
+      <div class="scrubber" data-dir="./assets/frames/weak" data-count="152" data-fps="10" data-digits="4"
+        data-ext="jpg" data-width="880" data-height="480">
+        <div class="scrubber-frame">
+          <canvas class="scrubber-canvas"></canvas>
+          <div class="scrubber-loading">
+            <div class="scrubber-loading-bar">
+              <div class="scrubber-loading-fill"></div>
+            </div>
+            <span class="scrubber-loading-label">Loading… 0%</span>
+          </div>
+        </div>
+        <div class="scrubber-controls">
+          <button type="button" class="scrubber-btn scrubber-reverse" aria-label="Play in reverse"
+            title="Play in reverse">◀</button>
+          <button type="button" class="scrubber-btn scrubber-play" aria-label="Play" title="Play">▶</button>
+          <input class="scrubber-range" type="range" min="0" max="151" value="0" step="1"
+            aria-label="Scrub through rollout" />
+          <span class="scrubber-counter">1 / 152</span>
+        </div>
+      </div>
     </div>
 
     <!-- ==================== VISUAL 2 — STRONG ==================== -->
@@ -215,8 +233,26 @@
       <p class="section-lead">Same episode, same probe — but swap the target noun in the instruction. A probe that
         genuinely tracks progress should notice. A naive one doesn't.</p>
 
-      <video class="rollout-video" src="./assets/videos/strong_decode_vid.mp4" controls loop muted playsinline
-        preload="metadata"></video>
+      <div class="scrubber" data-dir="./assets/frames/strong" data-count="230" data-fps="10" data-digits="4"
+        data-ext="jpg" data-width="1248" data-height="480">
+        <div class="scrubber-frame">
+          <canvas class="scrubber-canvas"></canvas>
+          <div class="scrubber-loading">
+            <div class="scrubber-loading-bar">
+              <div class="scrubber-loading-fill"></div>
+            </div>
+            <span class="scrubber-loading-label">Loading… 0%</span>
+          </div>
+        </div>
+        <div class="scrubber-controls">
+          <button type="button" class="scrubber-btn scrubber-reverse" aria-label="Play in reverse"
+            title="Play in reverse">◀</button>
+          <button type="button" class="scrubber-btn scrubber-play" aria-label="Play" title="Play">▶</button>
+          <input class="scrubber-range" type="range" min="0" max="229" value="0" step="1"
+            aria-label="Scrub through rollout" />
+          <span class="scrubber-counter">1 / 230</span>
+        </div>
+      </div>
       <p class="figure-caption">Caption TBD — the naive probe barely moves under the swap; the counterfactually
         trained one pins near τ = 1.0.</p>
     </div>
@@ -242,8 +278,26 @@
       <p class="section-lead">A perturbation is injected partway through the episode. Every detector eventually
         flags it — the question is how many frames late, and how often they cry wolf before anything happens.</p>
 
-      <video class="rollout-video" src="./assets/videos/ood_detection.mp4" controls loop muted playsinline
-        preload="metadata"></video>
+      <div class="scrubber" data-dir="./assets/frames/ood" data-count="201" data-fps="10" data-digits="4"
+        data-ext="jpg" data-width="1152" data-height="480">
+        <div class="scrubber-frame">
+          <canvas class="scrubber-canvas"></canvas>
+          <div class="scrubber-loading">
+            <div class="scrubber-loading-bar">
+              <div class="scrubber-loading-fill"></div>
+            </div>
+            <span class="scrubber-loading-label">Loading… 0%</span>
+          </div>
+        </div>
+        <div class="scrubber-controls">
+          <button type="button" class="scrubber-btn scrubber-reverse" aria-label="Play in reverse"
+            title="Play in reverse">◀</button>
+          <button type="button" class="scrubber-btn scrubber-play" aria-label="Play" title="Play">▶</button>
+          <input class="scrubber-range" type="range" min="0" max="200" value="0" step="1"
+            aria-label="Scrub through rollout" />
+          <span class="scrubber-counter">1 / 201</span>
+        </div>
+      </div>
       <p class="figure-caption"></p>
     </div>
 
@@ -307,6 +361,8 @@
     &copy; 2026 the authors. Source code for this website is available <a
       href="https://github.com/Edolphin232/vla-probing.github.io" target="_blank">here</a>.
   </div>
+
+  <script src="./assets/js/scrubber.js"></script>
 
   <script>
     // Progress Sidebar
