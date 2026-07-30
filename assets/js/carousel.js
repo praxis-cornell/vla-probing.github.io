@@ -45,8 +45,8 @@
       headMeterDots.forEach(function (dot, i) { dot.classList.toggle('on', i <= index); });
     }
 
-    // Swap mode only: the active definition's accent color (bronze / violet
-    // / blue) is read off the slide and applied to the shell, since the
+    // Swap mode only: the active definition's accent color (red / blue
+    // / violet) is read off the slide and applied to the shell, since the
     // shell itself doesn't change per slide otherwise.
     function syncAccent() {
       if (!shell) return;
