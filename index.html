@@ -73,8 +73,8 @@
     <div class="hero-flow">
       <div class="hero-orb" aria-hidden="true"></div>
       <div class="hero-text">Decoding Task Progress from VLA Representations</div>
-      <div class="sub-hero-text">Task progress is linearly readable from a VLA's activations — a lightweight handle
-        for monitoring deployed policies.</div>
+      <div class="sub-hero-text">Task progress is linearly readable from a VLA's activations, giving us a lightweight
+        handle for monitoring deployed policies.</div>
 
       <div class="hero-pill-row">
         <span class="hero-pill">Vision-Language-Action Models</span>
@@ -111,7 +111,7 @@
         </a>
       </div>
       <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-top:-16px;">Paper and code links
-        are placeholders — swap in the arXiv / GitHub URLs once available.</p>
+        are placeholders. Swap in the arXiv / GitHub URLs once available.</p>
 
       <div class="hero-waves" aria-hidden="true">
         <svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -151,7 +151,7 @@
 
     <p class="figure-caption">
       <b>Task progress is linearly readable from π₀.₅'s internal activations.</b> We cache residual-stream embeddings
-      zⁱ from every layer of π₀.₅ as it runs, then fit a linear probe φ(zⁱ) = wᵀzⁱ + b to predict task progress τ —
+      zⁱ from every layer of π₀.₅ as it runs, then fit a linear probe φ(zⁱ) = wᵀzⁱ + b to predict task progress τ,
       the normalized fraction of the trajectory remaining.
     </p>
 
@@ -180,7 +180,7 @@
               <div class="def-eyebrow">Does it track the right inputs?</div>
               <h3 class="def-title">Strong Decodability</h3>
               <img src="./assets/figures/strong_decode.png" alt="Swapping the target object changes the probe's reading, confirming it tracks the instruction" class="def-image" />
-              <p class="def-body">The same probe still holds when we perturb the inputs progress depends on —
+              <p class="def-body">The same probe still holds when we change the inputs progress depends on, like
                 swapping the target noun in the instruction.</p>
             </div>
 
@@ -235,11 +235,11 @@
           <div class="carousel-track">
             <figure class="carousel-slide">
               <img src="./assets/figures/weak_1.png" width="3822" height="1418" alt="Probe test MAE by layer index across backbone components, and by probe hidden-layer capacity" />
-              <figcaption>Probe accuracy by layer and by capacity — deeper vision-encoder layers and small probes generalize best; more capacity doesn't help.</figcaption>
+              <figcaption>Probe accuracy by layer and by capacity. Deeper vision-encoder layers work best, and a plain linear probe does as well as much larger ones, so extra capacity doesn't help.</figcaption>
             </figure>
             <figure class="carousel-slide">
               <img src="./assets/figures/weak_2.png" width="2613" height="2617" alt="Predicted vs. ground-truth task progress over the episode for PaliGemma, base and fine-tuned pi_0.5, and fine-tuned pi_0" />
-              <figcaption>Predicted vs. ground-truth progress across models — fine-tuning sharpens the probe's fit (MAE drops from 0.123 to 0.044).</figcaption>
+              <figcaption>Predicted vs. ground-truth progress across models. The signal is already there in PaliGemma before any robot data, and training on robot data sharpens it: MAE drops from 0.123 to 0.044.</figcaption>
             </figure>
           </div>
         </div>
@@ -253,8 +253,8 @@
     <div class="tagline" id="strong">Does It Read the Instruction?</div>
     <div class="card-surface">
       <div class="section-heading">Strong Decodability</div>
-      <p class="section-lead">Same episode, same probe — but swap the target noun in the instruction. A probe that
-        genuinely tracks progress should notice. A naive one doesn't.</p>
+      <p class="section-lead">Same episode, same probe, but we swap the target noun in the instruction. A probe that
+        really tracks progress should notice. A naive one doesn't.</p>
 
       <div class="scrubber" data-dir="./assets/frames/strong" data-count="230" data-fps="10" data-digits="4"
         data-ext="jpg" data-width="1248" data-height="480">
@@ -286,7 +286,7 @@
           <div class="carousel-track">
             <figure class="carousel-slide">
               <img src="./assets/figures/strong_1.png" width="3442" height="1156" alt="Predicted task progress across replans for the original and target-swapped instruction, comparing a probe trained on the naive dataset against one trained with counterfactuals" />
-              <figcaption>Trained on the naive dataset (left), the probe barely reacts to the swapped target — it isn't actually reading the instruction. Trained with counterfactuals (right), the swapped-target trace diverges sharply from the original.</figcaption>
+              <figcaption>Trained on the naive dataset (left), the probe barely reacts to the swapped target, so it isn't really reading the instruction. Trained with counterfactuals (right), the swapped-target trace pulls away from the original.</figcaption>
             </figure>
           </div>
         </div>
@@ -294,8 +294,6 @@
         <button type="button" class="carousel-arrow carousel-next" aria-label="Next figure">›</button>
         <div class="carousel-dots"></div>
       </div>
-      <p class="figure-caption">Caption TBD — the naive probe barely moves under the swap; the counterfactually
-        trained one pins near τ = 1.0.</p>
     </div>
 
     <!-- ==================== STEERABILITY (optional) ==================== -->
@@ -331,16 +329,16 @@
     <div class="card-surface">
       <div class="section-heading">Progress Stalls When Things Go Wrong</div>
       <p class="section-lead">In a healthy rollout, task progress falls steadily toward zero. When the policy leaves
-        its training distribution — or simply fails — that descent stops: progress stalls, drifts, or reverses. The
-        model's own sense of "how much is left" breaks down exactly when the episode does, which makes it a
-        general-purpose failure signal rather than a detector tuned to any one corruption.</p>
+        its training distribution or simply fails, that descent stops. Progress stalls, drifts, or even reverses. The
+        model's own sense of how much is left breaks down at the same moment the episode does, so we can use it as a
+        general failure signal instead of a detector tuned to one kind of corruption.</p>
 
       <img src="./assets/figures/ood_overview.png"
         alt="Overview: the readable progress signal tracks the expected trend in-distribution, then stagnates or reverses once the rollout goes out of distribution, flagging the failure"
         class="rollout-figure" />
       <p class="figure-caption">In-distribution, the probe's progress estimate tracks the expected descent. Once the
-        rollout goes OOD (gaussian noise, color shift, blur, occlusion), it stops descending — that stall is the
-        failure signal, and it needs no labels to read.</p>
+        rollout goes OOD (gaussian noise, color shift, blur, occlusion), it stops descending. That stall is the
+        failure signal, and reading it needs no labels.</p>
 
       <div class="scrubber" data-dir="./assets/frames/ood" data-count="201" data-fps="10" data-digits="4"
         data-ext="jpg" data-width="1152" data-height="480">
@@ -372,11 +370,11 @@
           <div class="carousel-track">
             <figure class="carousel-slide">
               <img src="./assets/figures/qualitative_ood.png" width="2912" height="2328" alt="Predicted task progress for an in-distribution episode versus OOD injection at 25%, 50%, and 75% through the rollout, with the detected onset k marked" />
-              <figcaption>The stall is visible wherever failure begins. Inject OOD at 25%, 50%, or 75% through the episode and the progress trace tracks the expected descent up to that point, then flattens out — the detector fires k replans later, regardless of when things break.</figcaption>
+              <figcaption>The stall shows up wherever failure starts. Inject OOD at 25%, 50%, or 75% through the episode and the progress trace follows the expected descent up to that point, then flattens out. The detector fires k replans later no matter when things break.</figcaption>
             </figure>
             <figure class="carousel-slide">
               <img src="./assets/figures/cross-ood.png" width="3222" height="1339" alt="Cross-OOD generalization AUROC across six task/mode combinations, comparing the progress-probe detector V_tau against SAFE-MLP and SAFE-LSTM baselines on trained versus held-out OOD modes" />
-              <figcaption>It beats the state of the art. On held-out OOD modes, the progress probe (V<sub>τ</sub>) reaches 0.871 per-replan and 0.960 per-episode AUROC — ahead of SAFE-MLP (0.844 / 0.894) and SAFE-LSTM (0.641 / 0.857), despite never being trained on failure labels or on those corruption modes.</figcaption>
+              <figcaption>It beats the state of the art. On held-out OOD modes, the progress probe (V<sub>τ</sub>) reaches 0.871 per-replan and 0.960 per-episode AUROC, ahead of SAFE-MLP (0.844 / 0.894) and SAFE-LSTM (0.641 / 0.857). It does this without ever training on failure labels or on those corruption modes.</figcaption>
             </figure>
           </div>
         </div>
@@ -400,7 +398,7 @@
             </svg>
           </div>
           <h3>Paper</h3>
-          <p>Decoding Task Progress from VLA Representations — submitted to the 10th Conference on Robot Learning
+          <p>Decoding Task Progress from VLA Representations. Submitted to the 10th Conference on Robot Learning
             (CoRL 2026).</p>
           <a href="#" target="_blank" class="resource-link">
             Read on arXiv (placeholder)
