@@ -53,8 +53,8 @@ body {
   padding: 48px 28px 48px 28px;
   position: relative;
   min-height: 100vh;
-  line-height: 1.7;
-  font-size: 15px;
+  line-height: 1.65;
+  font-size: 18px;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
 }
@@ -288,14 +288,14 @@ h1, h2, h3, h4, h5, h6, .section-heading {
 
 .sub-hero-text {
   font-family: 'Space Grotesk', -apple-system, sans-serif;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 400;
   font-style: normal;
   margin-bottom: 36px;
   line-height: 1.5;
   text-align: center;
   color: var(--text-secondary);
-  max-width: 680px;
+  max-width: 760px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -310,7 +310,7 @@ h1, h2, h3, h4, h5, h6, .section-heading {
 
 .hero-pill {
   font-family: 'Fira Code', monospace;
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 500;
   padding: 10px 18px;
   border-radius: 100px;
@@ -348,7 +348,7 @@ h1, h2, h3, h4, h5, h6, .section-heading {
 
 /* Authors */
 .authors {
-  font-size: 14px;
+  font-size: 17px;
   color: var(--text-secondary);
   line-height: 2;
   margin-top: 0;
@@ -358,7 +358,7 @@ h1, h2, h3, h4, h5, h6, .section-heading {
 
 .authors span {
   display: block;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-muted);
   margin-top: 8px;
 }
@@ -400,7 +400,7 @@ h1, h2, h3, h4, h5, h6, .section-heading {
 
 .authors .author-note {
   display: block;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-muted);
   margin-top: 6px;
   margin-bottom: 4px;
@@ -421,7 +421,7 @@ h1, h2, h3, h4, h5, h6, .section-heading {
 
 .cta {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
   text-decoration: none;
   padding: 14px 28px;
   border-radius: 12px;
@@ -497,7 +497,7 @@ h1, h2, h3, h4, h5, h6, .section-heading {
 /* Tagline - Section Headers */
 .tagline {
   font-family: 'Space Grotesk', -apple-system, sans-serif;
-  font-size: 28px;
+  font-size: 38px;
   font-weight: 500;
   letter-spacing: -0.02em;
   background: transparent;
@@ -596,7 +596,7 @@ a#figure-3-img img {
 
 /* Figure Caption */
 .figure-caption {
-  font-size: 13px;
+  font-size: 15.5px;
   color: var(--text-muted);
   text-align: center;
   margin-top: 20px;
@@ -620,7 +620,7 @@ a#figure-3-img img {
 }
 
 .section-heading {
-  font-size: 28px;
+  font-size: 32px;
   margin: 0 0 12px 0;
   color: var(--text-primary);
 }
@@ -628,8 +628,9 @@ a#figure-3-img img {
 .section-lead {
   color: var(--text-muted);
   margin: 0 0 24px 0;
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 18px;
+  line-height: 1.65;
+  max-width: 820px;
 }
 
 #cotrain-bar {
@@ -710,14 +711,14 @@ a#figure-3-img img {
 
 .resource-item h3 {
   font-family: 'Space Grotesk', -apple-system, sans-serif;
-  font-size: 18px;
+  font-size: 21px;
   font-weight: 600;
   margin: 0 0 10px 0;
   color: var(--text-primary);
 }
 
 .resource-item p {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
   margin: 0 0 18px 0;
   line-height: 1.6;
@@ -727,7 +728,7 @@ a#figure-3-img img {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--honey-bronze);
   text-decoration: none;
@@ -762,7 +763,7 @@ a#figure-3-img img {
 
 .bibtex-title {
   font-family: 'Space Grotesk', -apple-system, sans-serif;
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 600;
   margin-bottom: 18px;
   color: var(--text-primary);
@@ -776,13 +777,13 @@ a#figure-3-img img {
 
 .bibtex-code code {
   font-family: 'Fira Code', monospace;
-  font-size: 12px;
+  font-size: 13.5px;
   line-height: 1.7;
 }
 
 /* Footer */
 .footer {
-  font-size: 13px;
+  font-size: 14.5px;
   color: var(--text-muted);
   margin-top: 120px;
   border-top: 1px solid var(--border-subtle);
@@ -941,7 +942,7 @@ a#figure-3-img img {
 
 .def-eyebrow {
   font-family: 'Fira Code', monospace;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.02em;
   color: var(--text-muted);
@@ -969,9 +970,9 @@ a#figure-3-img img {
 }
 
 .def-body {
-  font-size: 16px;
+  font-size: 18px;
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.65;
   margin: 0 0 16px 0;
 }
 
@@ -984,27 +985,27 @@ a#figure-3-img img {
 @media (max-width: 768px) {
   body {
     padding: 24px 18px;
-    font-size: 14px;
+    font-size: 16px;
   }
   .hero-text {
     font-size: 48px;
   }
   .sub-hero-text {
-    font-size: 20px;
+    font-size: 21px;
   }
   .hero-flow {
     padding: 40px 28px 32px 28px;
     border-radius: 24px;
   }
   .tagline {
-    font-size: 24px;
+    font-size: 30px;
   }
   .card-surface {
     padding: 24px;
     border-radius: 20px;
   }
   .section-heading {
-    font-size: 24px;
+    font-size: 26px;
   }
 }
 
@@ -1140,8 +1141,8 @@ html {
 }
 
 .carousel-slide figcaption {
-  margin-top: 12px;
-  font-size: 13px;
+  margin-top: 14px;
+  font-size: 15.5px;
   color: var(--text-muted);
   text-align: center;
   line-height: 1.6;
@@ -1429,7 +1430,7 @@ html {
 
 .abstract-heading {
   font-family: 'Space Grotesk', -apple-system, sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1439,8 +1440,8 @@ html {
 }
 
 .abstract-block p {
-  font-size: 15.5px;
-  line-height: 1.8;
+  font-size: 19px;
+  line-height: 1.75;
   color: var(--text-secondary);
   text-align: justify;
   margin: 0;
