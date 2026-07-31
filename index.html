@@ -36,6 +36,12 @@
           <span class="progress-label">Definitions</span>
         </a>
       </div>
+      <div class="progress-item" data-section="method">
+        <a href="#method">
+          <span class="progress-dot"></span>
+          <span class="progress-label">Method</span>
+        </a>
+      </div>
       <div class="progress-item" data-section="weak">
         <a href="#weak">
           <span class="progress-dot"></span>
@@ -146,49 +152,44 @@
         interpretable path toward monitoring deployed visuomotor policies.</p>
     </div>
 
-    <!-- Teaser Figure -->
-    <img src="./assets/figures/Overview.svg?v=2" alt="Overview figure: dataset, activation extraction, probe training, and downstream tasks" class="teaser-image" />
-
-    <p class="figure-caption">
-      <b>Task progress is linearly readable from π₀.₅'s internal activations.</b> We cache residual-stream embeddings
-      zⁱ from every layer of π₀.₅ as it runs, then fit a linear probe φ(zⁱ) = wᵀzⁱ + b to predict task progress τ,
-      the normalized fraction of the trajectory remaining.
-    </p>
-
     <div class="tagline" id="definitions">Three Definitions</div>
     <p class="section-note"
-      style="text-align:center; color:var(--text-muted); font-size:17px; max-width:760px; margin:-8px auto 8px;">
-      "Representation" can mean three increasingly strong things.
+      style="text-align:center; color:var(--text-secondary); font-size:20px; line-height:1.65; max-width:860px; margin:-8px auto 8px;">
+      Saying that a model "represents" a quantity is ambiguous: it can mean anything from the quantity being
+      recoverable from the activations to the model actually using it to choose its actions. We separate the claim
+      into three concrete, increasingly demanding definitions.
     </p>
 
     <div class="carousel carousel--swap">
-      <div class="carousel-shell def-card-shell accent-red">
+      <div class="carousel-shell accent-red">
         <div class="carousel-head">
           <span class="carousel-index">01</span>
           <div class="carousel-meter"><span class="on"></span><span></span><span></span></div>
         </div>
         <div class="carousel-viewport">
           <div class="carousel-track">
-            <div class="carousel-slide" data-accent="red">
+            <div class="carousel-slide def-card-shell accent-red" data-accent="red">
               <div class="def-eyebrow">Can we read it?</div>
               <h3 class="def-title">Weak Decodability</h3>
               <img src="./assets/figures/weak_decode.png" alt="A linear probe reads mug height (task progress) from the model's activations" class="def-image" />
-              <p class="def-body">A linear probe recovers progress from in-distribution activations.</p>
+              <p class="def-body">A linear probe is able to recover task progress from the model's activations on
+                in-distribution rollouts.</p>
             </div>
 
-            <div class="carousel-slide" data-accent="blue">
+            <div class="carousel-slide def-card-shell accent-blue" data-accent="blue">
               <div class="def-eyebrow">Does it track the right inputs?</div>
               <h3 class="def-title">Strong Decodability</h3>
               <img src="./assets/figures/strong_decode.png" alt="Swapping the target object changes the probe's reading, confirming it tracks the instruction" class="def-image" />
-              <p class="def-body">The same probe still holds when we change the inputs progress depends on, like
-                swapping the target noun in the instruction.</p>
+              <p class="def-body">The probe's estimate responds appropriately when we intervene on what progress actually depends
+                on, such as swapping the target noun in the instruction.</p>
             </div>
 
-            <div class="carousel-slide" data-accent="violet">
+            <div class="carousel-slide def-card-shell accent-violet" data-accent="violet">
               <div class="def-eyebrow">Does the model act on it?</div>
               <h3 class="def-title">Steerability</h3>
               <img src="./assets/figures/steerability.png" alt="Editing the probe direction to steer the model's readout of task progress" class="def-image" />
-              <p class="def-body">Editing the feature along w changes the policy's behavior. It does not.</p>
+              <p class="def-body">Injecting a progress value back along w changes what
+                the policy does. For task progress, it does not.</p>
             </div>
           </div>
         </div>
@@ -196,6 +197,38 @@
       <button type="button" class="carousel-arrow carousel-prev" aria-label="Previous definition">‹</button>
       <button type="button" class="carousel-arrow carousel-next" aria-label="Next definition">›</button>
       <div class="carousel-dots"></div>
+    </div>
+
+    <!-- ==================== METHOD ==================== -->
+    <!-- NOTE: the step list below states the pipeline at the level of detail the
+         paper's overview figure shows. Confirm the specifics (which checkpoint,
+         how tokens are pooled, ridge vs. plain least squares, the split) against
+         the final experimental setup before release. -->
+    <div class="tagline" id="method">How We Probe</div>
+    <div class="card-surface method-card">
+      <div class="section-heading">A Linear Probe on the Residual Stream</div>
+      <p class="section-lead">We estimate task progress by fitting a linear probe to π₀.₅'s residual stream. The
+        policy is left frozen, the regression targets are derived from the rollouts themselves, and the resulting
+        readout requires no forward passes beyond the ones the policy already performs.</p>
+
+      <img src="./assets/figures/Overview.svg?v=2" alt="Overview figure: dataset, activation extraction, probe training, and downstream tasks" class="teaser-image" />
+
+      <ol class="method-steps">
+        <li><b>Data collection.</b> We roll out π₀.₅ on manipulation episodes and assign each timestep t of an
+          episode of length T the target τ<sub>t</sub> = (T − t) / T, the normalized time remaining. Targets follow
+          from the episode boundaries and require no additional annotation.</li>
+
+        <li><b>Activation extraction.</b> During each rollout we cache the residual-stream activation
+          z<sup>i</sup><sub>t</sub> at every layer i. Since the probe reads the residual stream rather than a
+          task-specific head, the same procedure applies to the pretrained PaliGemma backbone prior to any
+          robot-specific training.</li>
+
+        <li><b>Probe training.</b> For each layer we fit φ(z<sup>i</sup>) = w<sup>T</sup>z<sup>i</sup> + b to τ. We restrict the probe to be linear so that its accuracy reflects how accessible the
+          quantity is in the representation, rather than the capacity of the probe itself.</li>
+
+        <li><b>Evaluation.</b> The fitted probe is then assessed for weak and strong decodability, for steerability
+          under activation edits, and as a label-free OOD detector.</li>
+      </ol>
     </div>
 
     <!-- ==================== VISUAL 1 — WEAK ==================== -->

@@ -157,20 +157,24 @@ h1, h2, h3, h4, h5, h6, .section-heading {
   font-weight: 500;
   color: var(--text-muted);
   white-space: nowrap;
-  opacity: 0;
-  transform: translateX(-8px);
+  opacity: 0.55;
   transition: all 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.progress-item:hover .progress-label,
-.progress-item.active .progress-label {
+.progress-item:hover .progress-label {
   opacity: 1;
-  transform: translateX(0);
+  color: var(--text-primary);
+}
+
+.progress-item.passed .progress-label {
+  opacity: 0.8;
 }
 
 .progress-item.active .progress-label {
+  opacity: 1;
+  font-weight: 700;
   color: var(--carnelian);
 }
 
@@ -545,6 +549,69 @@ img {
   border: 3px solid var(--border-light) !important;
 }
 
+/* Method section: the overview figure and the numbered pipeline share one
+   card, so the figure sits flush inside the card's padding. */
+.method-card .teaser-image {
+  margin-bottom: 4px;
+}
+
+.method-card .section-lead {
+  font-size: 21px;
+}
+
+.method-steps {
+  list-style: none;
+  counter-reset: method-step;
+  display: grid;
+  gap: 20px;
+  /* Last element in the card — the card's own padding closes it out. */
+  margin: 28px 0 4px 0;
+  padding: 0;
+}
+
+.method-steps li {
+  counter-increment: method-step;
+  position: relative;
+  padding-left: 58px;
+  font-size: 20px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.method-steps li::before {
+  content: counter(method-step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 28px;
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--carnelian);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+}
+
+.method-steps b {
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .method-steps li {
+    padding-left: 44px;
+    font-size: 17px;
+  }
+
+  .method-steps li::before {
+    width: 30px;
+  }
+}
+
 /* Figure Links */
 a#figure-1-img,
 a#figure-2-img,
@@ -825,35 +892,103 @@ a#figure-3-img img {
 }
 
 /* Definitions Carousel */
-/* Swap mode: one fixed card frame (.carousel-shell). Content doesn't slide
-   as a track — instead the outgoing slide is pushed off one edge while the
-   incoming slide is animated in from the other, both driven from JS via
-   inline transforms so only two slides ever animate at once. */
+/* Swap mode: the three definitions are three real cards laid out in one wide
+   flex row. The viewport is a window narrower than that row, so the active
+   card sits centered with a slice of the card on either side still showing —
+   [] [ … ] [] [ … ] []. carousel.js centers the row by translating the track
+   to the active card's midpoint; CSS owns the card sizing and the fade. */
+.carousel--swap {
+  /* 900px is the card's original width, kept fixed so the definitions stay
+     the size they were before the row layout; the percentage only takes over
+     once the viewport is too narrow for it. */
+  --card-w: min(900px, 86%);
+  --card-gap: 26px;
+  /* The row breaks out past main-content's 1060px so there is room either
+     side of a 900px card for a substantial slice of its neighbours.
+     Centered via left/transform rather than margins: the shorthand `margin`
+     on .carousel is declared later at equal specificity and would reset any
+     margin-left set here. */
+  width: min(1360px, 96vw);
+  max-width: none;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .carousel--swap .carousel-viewport {
   background: transparent;
   border: none;
   box-shadow: none;
   border-radius: 0;
   overflow: hidden;
+  /* Room for the cards' drop shadows, which would otherwise be clipped. */
+  padding: 8px 0 12px;
+}
+
+/* Keep the shared index/meter header aligned to the active card's edges
+   rather than to the full-width viewport. */
+.carousel--swap .carousel-head {
+  width: var(--card-w);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .carousel--swap .carousel-track {
-  display: grid;
+  display: flex;
+  align-items: stretch;
+  gap: var(--card-gap);
+  width: 100%;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
+/* Each slide is now a card in its own right (.def-card-shell supplies the
+   frame and accent stripe), so the absolute stacking from the default-mode
+   .carousel-slide rules has to be undone here. */
 .carousel--swap .carousel-slide {
-  position: static;
-  grid-area: 1 / 1;
+  position: relative;
+  flex: 0 0 var(--card-w);
   width: auto;
-  padding: 0;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(0);
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  max-width: none;
+  margin: 0;
+  padding: 48px 56px;
+  opacity: 0.45;
+  transform: scale(0.94);
+  pointer-events: auto;
+  cursor: pointer;
+  transition: opacity 0.45s ease,
+              transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.3s ease;
 }
 
 .carousel--swap .carousel-slide.is-active {
-  pointer-events: auto;
+  opacity: 1;
+  transform: scale(1);
+  cursor: default;
+}
+
+.carousel--swap .carousel-slide:not(.is-active):hover {
+  opacity: 0.7;
+}
+
+/* Arrows tuck just inside the viewport so they sit over the peeking cards
+   instead of hanging off the page at this width. */
+.carousel--swap .carousel-prev {
+  left: 8px;
+}
+
+.carousel--swap .carousel-next {
+  right: 8px;
+}
+
+@media (max-width: 900px) {
+  .carousel--swap {
+    --card-w: 86%;
+    --card-gap: 14px;
+  }
+
+  .carousel--swap .carousel-slide {
+    padding: 28px 24px;
+  }
 }
 
 /* Accent colors: set --accent on any ancestor (a carousel root or the
@@ -910,8 +1045,9 @@ a#figure-3-img img {
   font-size: 36px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: var(--text-primary);
-  opacity: 0.14;
+  color: var(--accent, var(--carnelian));
+  opacity: 1;
+  transition: color 0.35s ease;
 }
 
 .carousel-index.is-updating {
@@ -921,7 +1057,7 @@ a#figure-3-img img {
 @keyframes carouselIndexPop {
   0% { transform: scale(0.7); opacity: 0.5; }
   55% { transform: scale(1.1); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.14; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .carousel-meter {
@@ -1066,11 +1202,8 @@ html {
   margin: 24px 0 4px 0;
 }
 
-.carousel--swap {
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-}
+/* NOTE: swap-mode sizing (width, breakout centering, card width) lives with
+   the definitions carousel further up — don't re-declare it here. */
 
 .carousel-viewport {
   position: relative;

@@ -87,6 +87,24 @@
       return dot;
     });
 
+    // Swap mode only: the slides are real cards sitting side by side in one
+    // wide row, so navigating means sliding the whole row until the active
+    // card is centered in the viewport. Whatever of its neighbours the
+    // viewport still spans is the peek.
+    function centerActive() {
+      if (!viewport || !track) return;
+      var card = slides[index];
+      var offset = (viewport.clientWidth / 2) - (card.offsetLeft + card.offsetWidth / 2);
+      track.style.transform = 'translateX(' + offset + 'px)';
+    }
+
+    function renderSwap() {
+      slides.forEach(function (s, i) {
+        s.classList.toggle('is-active', i === index);
+      });
+      centerActive();
+    }
+
     function swipeTo(newIndex, forward) {
       var oldSlide = slides[index];
       var newSlide = slides[newIndex];
@@ -133,9 +151,14 @@
       if (newIndex === index) return;
       if (typeof forward !== 'boolean') forward = newIndex > index;
 
-      swipeTo(newIndex, forward);
+      if (swap) {
+        index = newIndex;
+        renderSwap();
+      } else {
+        swipeTo(newIndex, forward); // reads slides[index] as the outgoing slide
+        index = newIndex;
+      }
 
-      index = newIndex;
       syncHead();
       syncAccent();
       dots.forEach(function (d, di) { d.classList.toggle('is-active', di === index); });
@@ -154,15 +177,38 @@
       startX = null;
     });
 
+    // Clicking a peeking card brings it to the center — the sliver is a
+    // target, not just decoration.
+    if (swap) {
+      slides.forEach(function (s, si) {
+        s.addEventListener('click', function () {
+          if (si !== index) goTo(si);
+        });
+      });
+    }
+
     // Initial paint: show slide 0 directly, no animation, no "old slide" yet.
-    slides.forEach(function (s, si) {
-      var active = si === 0;
-      s.classList.toggle('is-active', active);
-      s.style.opacity = active ? '1' : '0';
-      s.style.pointerEvents = active ? 'auto' : 'none';
-    });
+    if (swap) {
+      // The row starts left-aligned, so the first centering is a real
+      // transform change — suppress it or the carousel slides itself into
+      // place on every page load.
+      track.style.transition = 'none';
+      renderSwap();
+      void track.offsetWidth;
+      track.style.transition = '';
+    } else {
+      slides.forEach(function (s, si) {
+        var active = si === 0;
+        s.classList.toggle('is-active', active);
+        s.style.opacity = active ? '1' : '0';
+        s.style.pointerEvents = active ? 'auto' : 'none';
+      });
+    }
     resizeViewport(0);
-    if (!swap) window.addEventListener('resize', function () { resizeViewport(index); });
+    window.addEventListener('resize', function () {
+      if (swap) centerActive(); // card widths are %-based, so recenter on resize
+      else resizeViewport(index);
+    });
     syncHead();
     syncAccent();
     dots[0].classList.add('is-active');
