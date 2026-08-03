@@ -42,28 +42,28 @@
           <span class="progress-label">Method</span>
         </a>
       </div>
-      <div class="progress-item" data-section="weak">
+      <div class="progress-item accent-gold" data-section="weak">
         <a href="#weak">
           <span class="progress-dot"></span>
-          <span class="progress-label">Weak</span>
+          <span class="progress-label">Weak Decodability</span>
         </a>
       </div>
-      <div class="progress-item" data-section="strong">
+      <div class="progress-item accent-blue" data-section="strong">
         <a href="#strong">
           <span class="progress-dot"></span>
-          <span class="progress-label">Strong</span>
+          <span class="progress-label">Strong Decodability</span>
         </a>
       </div>
-      <div class="progress-item" data-section="steerability">
+      <div class="progress-item accent-violet" data-section="steerability">
         <a href="#steerability">
           <span class="progress-dot"></span>
           <span class="progress-label">Steerability</span>
         </a>
       </div>
-      <div class="progress-item" data-section="ood">
+      <div class="progress-item accent-green" data-section="ood">
         <a href="#ood">
           <span class="progress-dot"></span>
-          <span class="progress-label">OOD</span>
+          <span class="progress-label">OOD Detection</span>
         </a>
       </div>
       <div class="progress-item" data-section="resources">
@@ -79,7 +79,7 @@
     <div class="hero-flow">
       <div class="hero-orb" aria-hidden="true"></div>
       <div class="hero-text">Decoding Task Progress from VLA Representations</div>
-      <div class="sub-hero-text">Task progress is linearly readable from a VLA's activations, giving us a lightweight
+      <div class="sub-hero-text">Key Idea: Task progress is linearly readable from a VLA's activations, giving us a lightweight
         handle for monitoring deployed policies.</div>
 
       <div class="hero-pill-row">
@@ -161,35 +161,41 @@
     </p>
 
     <div class="carousel carousel--swap">
-      <div class="carousel-shell accent-red">
+      <div class="carousel-shell accent-gold">
         <div class="carousel-head">
           <span class="carousel-index">01</span>
           <div class="carousel-meter"><span class="on"></span><span></span><span></span></div>
         </div>
         <div class="carousel-viewport">
           <div class="carousel-track">
-            <div class="carousel-slide def-card-shell accent-red" data-accent="red">
+            <div class="carousel-slide def-card-shell accent-gold" data-accent="gold">
               <div class="def-eyebrow">Can we read it?</div>
               <h3 class="def-title">Weak Decodability</h3>
               <img src="./assets/figures/weak_decode.png" alt="A linear probe reads mug height (task progress) from the model's activations" class="def-image" />
-              <p class="def-body">A linear probe is able to recover task progress from the model's activations on
-                in-distribution rollouts.</p>
+              <p class="def-body">A linear probe fit on the model's activations predicts the quantity accurately on
+                held-out rollouts from the training distribution. This is the weakest claim: low error can still come
+                from a shortcut, like a probe that seems to read mug height but is really tracking the red mug
+                because it was the only target object in the training data.</p>
             </div>
 
             <div class="carousel-slide def-card-shell accent-blue" data-accent="blue">
               <div class="def-eyebrow">Does it track the right inputs?</div>
               <h3 class="def-title">Strong Decodability</h3>
               <img src="./assets/figures/strong_decode.png" alt="Swapping the target object changes the probe's reading, confirming it tracks the instruction" class="def-image" />
-              <p class="def-body">The probe's estimate responds appropriately when we intervene on what progress actually depends
-                on, such as swapping the target noun in the instruction.</p>
+              <p class="def-body">The same probe, without retraining, stays accurate under counterfactual changes to
+                the inputs the quantity actually depends on, like swapping the instruction to read the bowl's height instead
+                of the mug's height. A probe whose reading responds correctly to the swap can't be leaning on the red-mug
+                shortcut.</p>
             </div>
 
             <div class="carousel-slide def-card-shell accent-violet" data-accent="violet">
               <div class="def-eyebrow">Does the model act on it?</div>
               <h3 class="def-title">Steerability</h3>
               <img src="./assets/figures/steerability.png" alt="Editing the probe direction to steer the model's readout of task progress" class="def-image" />
-              <p class="def-body">Injecting a progress value back along w changes what
-                the policy does. For task progress, it does not.</p>
+              <p class="def-body">Even a strongly decodable signal may be one the model never consults when acting.
+                So we intervene: shift the activations along the probe's vector direction until the probe reads out the
+                counterfactual value, and check whether the policy's actions change to match, as if the counterfactual
+                were real.</p>
             </div>
           </div>
         </div>
@@ -259,7 +265,7 @@
         </div>
       </div>
 
-      <div class="carousel accent-red">
+      <div class="carousel accent-gold">
         <div class="carousel-head">
           <span class="carousel-index">01</span>
           <div class="carousel-meter"><span class="on"></span><span></span></div>
@@ -487,7 +493,6 @@
     document.addEventListener('DOMContentLoaded', () => {
       const progressItems = document.querySelectorAll('.progress-item');
       const progressLineFill = document.querySelector('.progress-line-fill');
-      const progressTrack = document.querySelector('.progress-track');
 
       // Build sections array from progress items to ensure they match
       const sections = [];
@@ -522,11 +527,10 @@
         }
 
         // Update progress line fill based on active section
-        if (progressLineFill && progressTrack) {
-          const trackHeight = progressTrack.offsetHeight;
-          const maxFillHeight = trackHeight - 44; // Account for top/bottom padding
-          const fillHeight = (activeIdx / Math.max(sections.length - 1, 1)) * maxFillHeight;
-          progressLineFill.style.height = `${Math.min(Math.max(fillHeight, 0), maxFillHeight)}px`;
+        if (progressLineFill) {
+          const pct = (activeIdx / Math.max(sections.length - 1, 1)) * 100;
+          const clamped = Math.min(Math.max(pct, 0), 100);
+          progressLineFill.style.clipPath = `inset(0 0 ${100 - clamped}% 0)`;
         }
 
         // Update dot states

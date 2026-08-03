@@ -1,17 +1,14 @@
-// Minimal click-through carousel: one slide visible at a time, navigated
-// with prev/next arrows or the dot indicators. Slides are stacked on top of
-// each other (not laid out side by side), and swipeTo() animates the active
-// one out while the next one animates in from the requested side.
+// Peek carousel: the slides are real cards sitting side by side in one wide
+// flex row, and the viewport is a window narrower than that row. Navigating
+// slides the whole row until the active card is centered; whatever of its
+// neighbours the viewport still spans is the peek. Driven by arrows, dots,
+// clicking a peeking card, touch swipes, or horizontal trackpad scrolling —
+// the wheel path drags the row continuously like a scrollbar and snaps to
+// the nearest card when the gesture ends.
 //
-// Two visual modes:
-//  - default: each slide is sized to its own content, and the viewport
-//    animates its height to match whichever slide is active (see
-//    resizeViewport) so the border hugs the current image instead of always
-//    reserving space for the tallest one.
-//  - "swap" (.carousel--swap): slides are grid-stacked inside one fixed
-//    card shell whose height stays constant (the tallest of the three,
-//    via normal CSS auto-sizing) — used for the "big center card" that
-//    swipes between the three definitions without resizing itself.
+// The definitions carousel (.carousel--swap) shares all of this; it differs
+// only in CSS (its cards carry .def-card-shell chrome and stretch to equal
+// heights) and in skipping the viewport height animation.
 (function () {
   function initCarousel(root) {
     var track = root.querySelector('.carousel-track');
@@ -27,12 +24,10 @@
     var headIndexEl = head ? head.querySelector('.carousel-index') : null;
     var headMeterDots = head ? Array.prototype.slice.call(head.querySelectorAll('.carousel-meter span')) : [];
     var index = 0;
-    var animating = false;
+    var dots = [];
 
     // The index badge and meter bars live once per carousel (not once per
-    // slide), so they stay put while only the eyebrow/title/image/body
-    // swipe underneath. Works the same whether .carousel-head sits inside
-    // the swap-mode shell or directly in a plain figure carousel.
+    // slide), so they stay put while the cards slide underneath.
     function syncHead() {
       if (!headIndexEl && headMeterDots.length === 0) return;
       var n = index + 1;
@@ -45,7 +40,7 @@
       headMeterDots.forEach(function (dot, i) { dot.classList.toggle('on', i <= index); });
     }
 
-    // Swap mode only: the active definition's accent color (red / blue
+    // Swap mode only: the active definition's accent color (gold / blue
     // / violet) is read off the slide and applied to the shell, since the
     // shell itself doesn't change per slide otherwise.
     function syncAccent() {
@@ -54,30 +49,63 @@
       shell.className = shellBaseClass + (accent ? ' accent-' + accent : '');
     }
 
-    // Default mode only: each slide's height is its own content height
-    // (see CSS — slides are position:absolute, not stretched to match
-    // siblings), so this always reflects the *active* slide, not the
-    // tallest of the bunch.
-    function resizeViewport(i) {
+    // Figure carousels only: the viewport hugs the active card's height so a
+    // short figure isn't framed by a tall empty window (taller neighbours
+    // just get cropped — they're previews). Height is border-box, so the
+    // viewport's own padding has to be added back in.
+    function resizeViewport() {
       if (swap || !viewport) return;
-      viewport.style.height = slides[i].offsetHeight + 'px';
+      var cs = getComputedStyle(viewport);
+      var pad = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+      viewport.style.height = (slides[index].offsetHeight + pad) + 'px';
+    }
+
+    // Track offset (px) that puts card i's midpoint at the viewport's.
+    function centerOffsetFor(i) {
+      var card = slides[i];
+      return (viewport.clientWidth / 2) - (card.offsetLeft + card.offsetWidth / 2);
+    }
+
+    function centerActive() {
+      if (!viewport || !track) return;
+      track.style.transform = 'translateX(' + centerOffsetFor(index) + 'px)';
+    }
+
+    // Update which card is highlighted (classes, header, accent, dots,
+    // viewport height) without moving the track — motion is separate so the
+    // wheel path can highlight live mid-drag.
+    function setIndex(i) {
+      index = i;
+      slides.forEach(function (s, si) { s.classList.toggle('is-active', si === index); });
+      dots.forEach(function (d, di) { d.classList.toggle('is-active', di === index); });
+      syncHead();
+      syncAccent();
+      resizeViewport();
+    }
+
+    function goTo(i) {
+      var newIndex = ((i % slides.length) + slides.length) % slides.length;
+      if (newIndex !== index) setIndex(newIndex);
+      centerActive();
+    }
+
+    function render() {
+      setIndex(index);
+      centerActive();
     }
 
     if (slides.length <= 1) {
       if (prevBtn) prevBtn.style.display = 'none';
       if (nextBtn) nextBtn.style.display = 'none';
-      if (slides[0]) {
-        slides[0].classList.add('is-active');
-        slides[0].style.opacity = '1';
-        slides[0].style.pointerEvents = 'auto';
-      }
+      if (slides[0]) slides[0].classList.add('is-active');
       syncHead();
       syncAccent();
-      resizeViewport(0);
+      resizeViewport(); // lone card centers itself via :only-child margins
+      window.addEventListener('load', resizeViewport); // re-measure once images settle
       return;
     }
 
-    var dots = slides.map(function (_, i) {
+    dots = slides.map(function (_, i) {
       var dot = document.createElement('button');
       dot.type = 'button';
       dot.className = 'carousel-dot';
@@ -87,85 +115,16 @@
       return dot;
     });
 
-    // Swap mode only: the slides are real cards sitting side by side in one
-    // wide row, so navigating means sliding the whole row until the active
-    // card is centered in the viewport. Whatever of its neighbours the
-    // viewport still spans is the peek.
-    function centerActive() {
-      if (!viewport || !track) return;
-      var card = slides[index];
-      var offset = (viewport.clientWidth / 2) - (card.offsetLeft + card.offsetWidth / 2);
-      track.style.transform = 'translateX(' + offset + 'px)';
-    }
+    prevBtn.addEventListener('click', function () { goTo(index - 1); });
+    nextBtn.addEventListener('click', function () { goTo(index + 1); });
 
-    function renderSwap() {
-      slides.forEach(function (s, i) {
-        s.classList.toggle('is-active', i === index);
+    // Clicking a peeking card brings it to the center — the sliver is a
+    // target, not just decoration.
+    slides.forEach(function (s, si) {
+      s.addEventListener('click', function () {
+        if (si !== index) goTo(si);
       });
-      centerActive();
-    }
-
-    function swipeTo(newIndex, forward) {
-      var oldSlide = slides[index];
-      var newSlide = slides[newIndex];
-      var dir = forward ? 1 : -1;
-      animating = true;
-
-      // Snap the incoming slide just off the entry edge, fully opaque, with
-      // transitions disabled so this positioning jump isn't itself animated.
-      newSlide.style.transition = 'none';
-      newSlide.style.opacity = '1';
-      newSlide.style.pointerEvents = 'auto';
-      newSlide.style.transform = 'translateX(' + (dir * 100) + '%)';
-      newSlide.classList.add('is-active');
-      void newSlide.offsetWidth; // force reflow so the snap applies first
-      newSlide.style.transition = '';
-
-      oldSlide.style.opacity = '1';
-      oldSlide.style.pointerEvents = 'none';
-      oldSlide.classList.remove('is-active');
-
-      resizeViewport(newIndex);
-
-      requestAnimationFrame(function () {
-        oldSlide.style.transform = 'translateX(' + (-dir * 100) + '%)';
-        newSlide.style.transform = 'translateX(0)';
-      });
-
-      var onDone = function (e) {
-        if (e.target !== newSlide || e.propertyName !== 'transform') return;
-        newSlide.removeEventListener('transitionend', onDone);
-        oldSlide.style.transition = 'none';
-        oldSlide.style.transform = 'translateX(0)';
-        oldSlide.style.opacity = '0';
-        void oldSlide.offsetWidth;
-        oldSlide.style.transition = '';
-        animating = false;
-      };
-      newSlide.addEventListener('transitionend', onDone);
-    }
-
-    function goTo(i, forward) {
-      if (animating) return;
-      var newIndex = ((i % slides.length) + slides.length) % slides.length;
-      if (newIndex === index) return;
-      if (typeof forward !== 'boolean') forward = newIndex > index;
-
-      if (swap) {
-        index = newIndex;
-        renderSwap();
-      } else {
-        swipeTo(newIndex, forward); // reads slides[index] as the outgoing slide
-        index = newIndex;
-      }
-
-      syncHead();
-      syncAccent();
-      dots.forEach(function (d, di) { d.classList.toggle('is-active', di === index); });
-    }
-
-    prevBtn.addEventListener('click', function () { goTo(index - 1, false); });
-    nextBtn.addEventListener('click', function () { goTo(index + 1, true); });
+    });
 
     // Basic touch swipe: dragging left advances forward, right goes back.
     var startX = null;
@@ -173,45 +132,59 @@
     track.addEventListener('touchend', function (e) {
       if (startX === null) return;
       var dx = e.changedTouches[0].clientX - startX;
-      if (Math.abs(dx) > 40) goTo(index + (dx < 0 ? 1 : -1), dx < 0);
+      if (Math.abs(dx) > 40) goTo(index + (dx < 0 ? 1 : -1));
       startX = null;
     });
 
-    // Clicking a peeking card brings it to the center — the sliver is a
-    // target, not just decoration.
-    if (swap) {
-      slides.forEach(function (s, si) {
-        s.addEventListener('click', function () {
-          if (si !== index) goTo(si);
-        });
-      });
-    }
+    // Horizontal trackpad scrolling, scrollbar-style: the row follows the
+    // gesture continuously in either direction (clamped at the first/last
+    // card), the nearest card highlights live, and when the event stream
+    // goes idle the row snaps that card to center. Only horizontal-dominant
+    // wheel events are claimed — vertical ones stay with the page.
+    var scrollPos = null;
+    var wheelIdleTimer = null;
+    viewport.addEventListener('wheel', function (e) {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      e.preventDefault();
 
-    // Initial paint: show slide 0 directly, no animation, no "old slide" yet.
-    if (swap) {
-      // The row starts left-aligned, so the first centering is a real
-      // transform change — suppress it or the carousel slides itself into
-      // place on every page load.
+      if (scrollPos === null) scrollPos = centerOffsetFor(index);
+      scrollPos -= e.deltaX;
+      var last = centerOffsetFor(slides.length - 1);
+      var first = centerOffsetFor(0);
+      scrollPos = Math.min(Math.max(scrollPos, Math.min(first, last)), Math.max(first, last));
+
       track.style.transition = 'none';
-      renderSwap();
-      void track.offsetWidth;
-      track.style.transition = '';
-    } else {
-      slides.forEach(function (s, si) {
-        var active = si === 0;
-        s.classList.toggle('is-active', active);
-        s.style.opacity = active ? '1' : '0';
-        s.style.pointerEvents = active ? 'auto' : 'none';
-      });
-    }
-    resizeViewport(0);
-    window.addEventListener('resize', function () {
-      if (swap) centerActive(); // card widths are %-based, so recenter on resize
-      else resizeViewport(index);
-    });
-    syncHead();
-    syncAccent();
-    dots[0].classList.add('is-active');
+      track.style.transform = 'translateX(' + scrollPos + 'px)';
+
+      // Highlight whichever card is nearest the center as the row drags.
+      var nearest = 0;
+      var bestDist = Infinity;
+      for (var i = 0; i < slides.length; i++) {
+        var d = Math.abs(centerOffsetFor(i) - scrollPos);
+        if (d < bestDist) { bestDist = d; nearest = i; }
+      }
+      if (nearest !== index) setIndex(nearest);
+
+      clearTimeout(wheelIdleTimer);
+      wheelIdleTimer = setTimeout(function () {
+        scrollPos = null;
+        track.style.transition = '';
+        centerActive(); // snap the nearest card the rest of the way
+      }, 120);
+    }, { passive: false });
+
+    // Initial paint: the row starts left-aligned, so the first centering is
+    // a real transform change — suppress the transition or the carousel
+    // slides itself into place on every page load.
+    track.style.transition = 'none';
+    if (viewport) viewport.style.transition = 'none';
+    render();
+    void track.offsetWidth;
+    track.style.transition = '';
+    if (viewport) viewport.style.transition = '';
+
+    window.addEventListener('resize', render); // card widths are %-based
+    window.addEventListener('load', render); // re-measure once images settle
   }
 
   document.addEventListener('DOMContentLoaded', function () {

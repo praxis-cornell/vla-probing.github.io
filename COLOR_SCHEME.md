@@ -9,8 +9,14 @@ figures and visualizations.
 ### Carnelian (Primary Accent — Cornell Red)
 - **Hex:** `#b31b1b`
 - **RGB:** `rgb(179, 27, 27)`
-- **Usage:** Primary brand color, highlights, key metrics, term 1 (Weak Decodability)
+- **Usage:** Primary brand color, highlights, key metrics, buttons, links
 - **Paper use:** Main data series, primary emphasis, correlation lines
+
+### Gold
+- **Hex:** `#d4940a`
+- **RGB:** `rgb(212, 148, 10)`
+- **Usage:** Term 1 (Weak Decodability) accent
+- **Paper use:** Warm secondary data series
 
 ### Vivid Orange
 - **Hex:** `#e8590c`
@@ -52,10 +58,11 @@ figures and visualizations.
 
 | Section | Accent |
 |---|---|
-| Term 1 — Weak Decodability | Carnelian `#b31b1b` |
+| Term 1 — Weak Decodability | Gold `#d4940a` |
 | Term 2 — Strong Decodability | Blue Energy `#2563eb` |
 | Term 3 — Steerability | Neon Violet `#7c3aed` |
 | OOD / Failure Detection | Detect Green `#2f9e44` |
+| Site-wide brand / everything else | Carnelian `#b31b1b` |
 
 ## Background Colors
 
@@ -118,6 +125,7 @@ figures and visualizations.
 ### For LaTeX (xcolor package)
 ```latex
 \definecolor{carnelian}{RGB}{179,27,27}
+\definecolor{gold}{RGB}{212,148,10}
 \definecolor{vividorange}{RGB}{232,89,12}
 \definecolor{blueenergy}{RGB}{37,99,235}
 \definecolor{neonviolet}{RGB}{124,58,237}
@@ -129,6 +137,7 @@ figures and visualizations.
 ```python
 COLORS = {
     'carnelian': '#b31b1b',
+    'gold': '#d4940a',
     'vivid_orange': '#e8590c',
     'blue_energy': '#2563eb',
     'neon_violet': '#7c3aed',
