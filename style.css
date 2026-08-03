@@ -716,6 +716,23 @@ a#figure-3-img img {
   max-width: 820px;
 }
 
+/* Verdict line closing each results section, tinted with its accent. */
+.section-takeaway {
+  margin: 28px auto 4px;
+  max-width: 860px;
+  padding: 16px 24px;
+  border-left: 4px solid var(--accent, var(--carnelian));
+  border-radius: 0 14px 14px 0;
+  background: color-mix(in srgb, var(--accent, var(--carnelian)) 6%, var(--bg-surface));
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.section-takeaway b {
+  color: var(--text-primary);
+}
+
 #cotrain-bar {
   width: 100%;
   background: var(--bg-elevated);

@@ -286,6 +286,11 @@
         <button type="button" class="carousel-arrow carousel-next" aria-label="Next figure">›</button>
         <div class="carousel-dots"></div>
       </div>
+
+      <p class="section-takeaway accent-gold"><b>Given these results, task progress is weakly decodable.</b> A plain
+        linear probe reads it from the residual stream with MAE 0.044, the signal is already present in the
+        pretrained backbone before any robot data, and adding probe capacity buys nothing, so the quantity is
+        linearly accessible rather than buried in the activations.</p>
     </div>
 
     <!-- ==================== VISUAL 2 — STRONG ==================== -->
@@ -333,6 +338,11 @@
         <button type="button" class="carousel-arrow carousel-next" aria-label="Next figure">›</button>
         <div class="carousel-dots"></div>
       </div>
+
+      <p class="section-takeaway accent-blue"><b>Given these results, task progress is strongly decodable, but only
+        when the training data demands it.</b> A probe fit with counterfactual prompts responds correctly when the
+        instruction changes, while a naively trained probe ignores the swap entirely, so whether the probe tracks
+        the instruction depends on the data used to fit it, not on the model's representation alone.</p>
     </div>
 
     <!-- ==================== STEERABILITY (optional) ==================== -->
@@ -361,6 +371,11 @@
         <button type="button" class="carousel-arrow carousel-next" aria-label="Next figure">›</button>
         <div class="carousel-dots"></div>
       </div>
+
+      <p class="section-takeaway accent-violet"><b>Given these results, task progress is not steerable.</b> The
+        injected value is overwritten within a few layers and the steered actions stay far from the true
+        counterfactual ones, so the policy exposes progress without consulting it when choosing actions. The signal
+        is observable, not a control handle.</p>
     </div>
 
     <!-- ==================== VISUAL 3 — OOD ==================== -->
@@ -421,7 +436,11 @@
         <button type="button" class="carousel-arrow carousel-next" aria-label="Next figure">›</button>
         <div class="carousel-dots"></div>
       </div>
-      <p class="figure-caption"></p>
+
+      <p class="section-takeaway accent-green"><b>Given these results, the probe makes a practical failure
+        detector.</b> Because progress stalls exactly when a rollout leaves distribution, thresholding the probe's
+        trace flags failures with state-of-the-art AUROC, requires no failure labels, and generalizes to corruption
+        modes it was never tuned on.</p>
     </div>
 
 
