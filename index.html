@@ -19,62 +19,6 @@
 </head>
 
 <body>
-  <!-- Progress Sidebar -->
-  <nav class="progress-sidebar" aria-label="Page progress">
-    <div class="progress-track">
-      <div class="progress-line"></div>
-      <div class="progress-line-fill"></div>
-      <div class="progress-item" data-section="hero">
-        <a href="#">
-          <span class="progress-dot"></span>
-          <span class="progress-label">Intro</span>
-        </a>
-      </div>
-      <div class="progress-item" data-section="definitions">
-        <a href="#definitions">
-          <span class="progress-dot"></span>
-          <span class="progress-label">Definitions</span>
-        </a>
-      </div>
-      <div class="progress-item" data-section="method">
-        <a href="#method">
-          <span class="progress-dot"></span>
-          <span class="progress-label">Method</span>
-        </a>
-      </div>
-      <div class="progress-item accent-gold" data-section="weak">
-        <a href="#weak">
-          <span class="progress-dot"></span>
-          <span class="progress-label">Weak Decodability</span>
-        </a>
-      </div>
-      <div class="progress-item accent-blue" data-section="strong">
-        <a href="#strong">
-          <span class="progress-dot"></span>
-          <span class="progress-label">Strong Decodability</span>
-        </a>
-      </div>
-      <div class="progress-item accent-violet" data-section="steerability">
-        <a href="#steerability">
-          <span class="progress-dot"></span>
-          <span class="progress-label">Steerability</span>
-        </a>
-      </div>
-      <div class="progress-item accent-green" data-section="ood">
-        <a href="#ood">
-          <span class="progress-dot"></span>
-          <span class="progress-label">OOD Detection</span>
-        </a>
-      </div>
-      <div class="progress-item" data-section="resources">
-        <a href="#resources">
-          <span class="progress-dot"></span>
-          <span class="progress-label">Resources</span>
-        </a>
-      </div>
-    </div>
-  </nav>
-
   <div class="main-content">
     <div class="hero-flow">
       <div class="hero-orb" aria-hidden="true"></div>
@@ -116,7 +60,7 @@
           Code
         </a>
       </div>
-      <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-top:-16px;">Paper and code links
+      <p style="text-align:center; font-size:var(--fs-mono-sm); color:var(--text-muted); margin-top:-16px;">Paper and code links
         are placeholders. Swap in the arXiv / GitHub URLs once available.</p>
 
       <div class="hero-waves" aria-hidden="true">
@@ -153,56 +97,59 @@
     </div>
 
     <div class="tagline" id="definitions">Three Definitions</div>
-    <p class="section-note"
-      style="text-align:center; color:var(--text-secondary); font-size:20px; line-height:1.65; max-width:860px; margin:-8px auto 8px;">
-      Saying that a model "represents" a quantity is ambiguous: it can mean anything from the quantity being
-      recoverable from the activations to the model actually using it to choose its actions. We separate the claim
-      into three concrete, increasingly demanding definitions.
-    </p>
+    <div class="card-surface">
+      <p class="section-lead">
+        Saying that a model "represents" a quantity is ambiguous: it can mean anything from the quantity being
+        recoverable from the activations to the model actually using it to choose its actions. We separate the claim
+        into three concrete, increasingly demanding definitions.
+      </p>
 
-    <div class="carousel carousel--swap">
-      <div class="carousel-shell accent-gold">
-        <div class="carousel-head">
-          <span class="carousel-index">01</span>
-          <div class="carousel-meter"><span class="on"></span><span></span><span></span></div>
-        </div>
-        <div class="carousel-viewport">
-          <div class="carousel-track">
-            <div class="carousel-slide def-card-shell accent-gold" data-accent="gold">
+      <div class="def-stack">
+        <div class="def-card-shell accent-gold">
+          <div class="def-head">
+            <span class="def-index">01</span>
+            <div>
               <div class="def-eyebrow">Can we read it?</div>
               <h3 class="def-title">Weak Decodability</h3>
-              <img src="./assets/figures/weak_decode.png" alt="A linear probe reads mug height (task progress) from the model's activations" class="def-image" />
-              <p class="def-body">A linear probe fit on the model's activations predicts the quantity accurately on
-                held-out rollouts from the training distribution. This is the weakest claim: low error can still come
-                from a shortcut, like a probe that seems to read mug height but is really tracking the red mug
-                because it was the only target object in the training data.</p>
-            </div>
-
-            <div class="carousel-slide def-card-shell accent-blue" data-accent="blue">
-              <div class="def-eyebrow">Does it track the right inputs?</div>
-              <h3 class="def-title">Strong Decodability</h3>
-              <img src="./assets/figures/strong_decode.png" alt="Swapping the target object changes the probe's reading, confirming it tracks the instruction" class="def-image" />
-              <p class="def-body">The same probe, without retraining, stays accurate under counterfactual changes to
-                the inputs the quantity actually depends on, like swapping the instruction to read the bowl's height instead
-                of the mug's height. A probe whose reading responds correctly to the swap can't be leaning on the red-mug
-                shortcut.</p>
-            </div>
-
-            <div class="carousel-slide def-card-shell accent-violet" data-accent="violet">
-              <div class="def-eyebrow">Does the model act on it?</div>
-              <h3 class="def-title">Steerability</h3>
-              <img src="./assets/figures/steerability.png" alt="Editing the probe direction to steer the model's readout of task progress" class="def-image" />
-              <p class="def-body">Even a strongly decodable signal may be one the model never consults when acting.
-                So we intervene: shift the activations along the probe's vector direction until the probe reads out the
-                counterfactual value, and check whether the policy's actions change to match, as if the counterfactual
-                were real.</p>
             </div>
           </div>
+          <img src="./assets/figures/weak_decode.png" alt="A linear probe reads mug height (task progress) from the model's activations" class="def-image" />
+          <p class="def-body">A linear probe fit on the model's activations predicts the quantity accurately on
+            held-out rollouts from the training distribution. This is the weakest claim: low error can still come
+            from a shortcut, like a probe that seems to read mug height but is really tracking the red mug
+            because it was the only target object in the training data.</p>
+        </div>
+
+        <div class="def-card-shell accent-blue">
+          <div class="def-head">
+            <span class="def-index">02</span>
+            <div>
+              <div class="def-eyebrow">Does it track the right inputs?</div>
+              <h3 class="def-title">Strong Decodability</h3>
+            </div>
+          </div>
+          <img src="./assets/figures/strong_decode.png" alt="Swapping the target object changes the probe's reading, confirming it tracks the instruction" class="def-image" />
+          <p class="def-body">The same probe, without retraining, stays accurate under counterfactual changes to
+            the inputs the quantity actually depends on, like swapping the instruction to read the bowl's height instead
+            of the mug's height. A probe whose reading responds correctly to the swap can't be leaning on the red-mug
+            shortcut.</p>
+        </div>
+
+        <div class="def-card-shell accent-violet">
+          <div class="def-head">
+            <span class="def-index">03</span>
+            <div>
+              <div class="def-eyebrow">Does the model act on it?</div>
+              <h3 class="def-title">Steerability</h3>
+            </div>
+          </div>
+          <img src="./assets/figures/steerability.png" alt="Editing the probe direction to steer the model's readout of task progress" class="def-image" />
+          <p class="def-body">Even a strongly decodable signal may be one the model never consults when acting.
+            So we intervene: shift the activations along the probe's vector direction until the probe reads out the
+            counterfactual value, and check whether the policy's actions change to match, as if the counterfactual
+            were real.</p>
         </div>
       </div>
-      <button type="button" class="carousel-arrow carousel-prev" aria-label="Previous definition">‹</button>
-      <button type="button" class="carousel-arrow carousel-next" aria-label="Next definition">›</button>
-      <div class="carousel-dots"></div>
     </div>
 
     <!-- ==================== METHOD ==================== -->
@@ -265,26 +212,15 @@
         </div>
       </div>
 
-      <div class="carousel accent-gold">
-        <div class="carousel-head">
-          <span class="carousel-index">01</span>
-          <div class="carousel-meter"><span class="on"></span><span></span></div>
-        </div>
-        <div class="carousel-viewport">
-          <div class="carousel-track">
-            <figure class="carousel-slide">
-              <img src="./assets/figures/weak_1.png" width="3822" height="1418" alt="Probe test MAE by layer index across backbone components, and by probe hidden-layer capacity" />
-              <figcaption>Probe accuracy by layer and by capacity. Deeper vision-encoder layers work best, and a plain linear probe does as well as much larger ones, so extra capacity doesn't help.</figcaption>
-            </figure>
-            <figure class="carousel-slide">
-              <img src="./assets/figures/weak_2.png" width="2613" height="2617" alt="Predicted vs. ground-truth task progress over the episode for PaliGemma, base and fine-tuned pi_0.5, and fine-tuned pi_0" />
-              <figcaption>Predicted vs. ground-truth progress across models. The signal is already there in PaliGemma before any robot data, and training on robot data sharpens it: MAE drops from 0.123 to 0.044.</figcaption>
-            </figure>
-          </div>
-        </div>
-        <button type="button" class="carousel-arrow carousel-prev" aria-label="Previous figure">‹</button>
-        <button type="button" class="carousel-arrow carousel-next" aria-label="Next figure">›</button>
-        <div class="carousel-dots"></div>
+      <div class="figure-stack accent-gold">
+        <figure class="figure-card">
+          <img src="./assets/figures/weak_1.png" width="3822" height="1418" alt="Probe test MAE by layer index across backbone components, and by probe hidden-layer capacity" />
+          <figcaption>Probe accuracy by layer and by capacity. Deeper vision-encoder layers work best, and a plain linear probe does as well as much larger ones, so extra capacity doesn't help.</figcaption>
+        </figure>
+        <figure class="figure-card">
+          <img src="./assets/figures/weak_2.png" width="2613" height="2617" alt="Predicted vs. ground-truth task progress over the episode for PaliGemma, base and fine-tuned pi_0.5, and fine-tuned pi_0" />
+          <figcaption>Predicted vs. ground-truth progress across models. The signal is already there in PaliGemma before any robot data, and training on robot data sharpens it: MAE drops from 0.123 to 0.044.</figcaption>
+        </figure>
       </div>
 
       <p class="section-takeaway accent-gold"><b>Given these results, task progress is weakly decodable.</b> A plain
@@ -321,22 +257,11 @@
         </div>
       </div>
 
-      <div class="carousel accent-blue">
-        <div class="carousel-head">
-          <span class="carousel-index">01</span>
-          <div class="carousel-meter"><span class="on"></span></div>
-        </div>
-        <div class="carousel-viewport">
-          <div class="carousel-track">
-            <figure class="carousel-slide">
-              <img src="./assets/figures/strong_1.png" width="3442" height="1156" alt="Predicted task progress across replans for the original and target-swapped instruction, comparing a probe trained on the naive dataset against one trained with counterfactuals" />
-              <figcaption>Trained on the naive dataset (left), the probe barely reacts to the swapped target, so it isn't really reading the instruction. Trained with counterfactuals (right), the swapped-target trace pulls away from the original.</figcaption>
-            </figure>
-          </div>
-        </div>
-        <button type="button" class="carousel-arrow carousel-prev" aria-label="Previous figure">‹</button>
-        <button type="button" class="carousel-arrow carousel-next" aria-label="Next figure">›</button>
-        <div class="carousel-dots"></div>
+      <div class="figure-stack accent-blue">
+        <figure class="figure-card">
+          <img src="./assets/figures/strong_1.png" width="3442" height="1156" alt="Predicted task progress across replans for the original and target-swapped instruction, comparing a probe trained on the naive dataset against one trained with counterfactuals" />
+          <figcaption>Trained on the naive dataset (left), the probe barely reacts to the swapped target, so it isn't really reading the instruction. Trained with counterfactuals (right), the swapped-target trace pulls away from the original.</figcaption>
+        </figure>
       </div>
 
       <p class="section-takeaway accent-blue"><b>Given these results, task progress is strongly decodable, with counterfactual training data for the probe.</b> A probe fit with counterfactual prompts responds correctly when the
@@ -351,24 +276,13 @@
       <p class="section-lead">Injecting a boosted progress value along the probe direction does not push the policy
         toward the behavior that value implies. Progress is readable but not a control handle.</p>
 
-      <div class="carousel accent-violet">
-        <div class="carousel-head">
-          <span class="carousel-index">01</span>
-          <div class="carousel-meter"><span class="on"></span></div>
-        </div>
-        <div class="carousel-viewport">
-          <div class="carousel-track">
-            <figure class="carousel-slide">
-              <img src="./assets/figures/steerability_failure.png" width="3509" height="1438"
-                alt="Left: the injected progress push decays almost immediately across layers. Right: actions under injection stay far from the demonstration, well above the policy's normal action distance floor." />
-              <figcaption>The injection doesn't propagate to later layers (left), and actions stay far from ground
-                truth (right).</figcaption>
-            </figure>
-          </div>
-        </div>
-        <button type="button" class="carousel-arrow carousel-prev" aria-label="Previous figure">‹</button>
-        <button type="button" class="carousel-arrow carousel-next" aria-label="Next figure">›</button>
-        <div class="carousel-dots"></div>
+      <div class="figure-stack accent-violet">
+        <figure class="figure-card">
+          <img src="./assets/figures/steerability_failure.png" width="3509" height="1438"
+            alt="Left: the injected progress push decays almost immediately across layers. Right: actions under injection stay far from the demonstration, well above the policy's normal action distance floor." />
+          <figcaption>The injection doesn't propagate to later layers (left), and actions stay far from ground
+            truth (right).</figcaption>
+        </figure>
       </div>
 
       <p class="section-takeaway accent-violet"><b>Given these results, task progress is not steerable.</b> The
@@ -414,26 +328,15 @@
         </div>
       </div>
 
-      <div class="carousel accent-green">
-        <div class="carousel-head">
-          <span class="carousel-index">01</span>
-          <div class="carousel-meter"><span class="on"></span><span></span></div>
-        </div>
-        <div class="carousel-viewport">
-          <div class="carousel-track">
-            <figure class="carousel-slide">
-              <img src="./assets/figures/qualitative_ood.png" width="2912" height="2328" alt="Predicted task progress for an in-distribution episode versus OOD injection at 25%, 50%, and 75% through the rollout, with the detected onset k marked" />
-              <figcaption>The stall shows up wherever failure starts. Inject OOD at 25%, 50%, or 75% through the episode and the progress trace follows the expected descent up to that point, then flattens out. The detector fires k replans later no matter when things break.</figcaption>
-            </figure>
-            <figure class="carousel-slide">
-              <img src="./assets/figures/cross-ood.png" width="3222" height="1339" alt="Cross-OOD generalization AUROC across six task/mode combinations, comparing the progress-probe detector V_tau against SAFE-MLP and SAFE-LSTM baselines on trained versus held-out OOD modes" />
-              <figcaption>It beats the state of the art. On held-out OOD modes, the progress probe (V<sub>τ</sub>) reaches 0.871 per-replan and 0.960 per-episode AUROC, ahead of SAFE-MLP (0.844 / 0.894) and SAFE-LSTM (0.641 / 0.857). It does this without ever training on failure labels or on those corruption modes.</figcaption>
-            </figure>
-          </div>
-        </div>
-        <button type="button" class="carousel-arrow carousel-prev" aria-label="Previous figure">‹</button>
-        <button type="button" class="carousel-arrow carousel-next" aria-label="Next figure">›</button>
-        <div class="carousel-dots"></div>
+      <div class="figure-stack accent-green">
+        <figure class="figure-card">
+          <img src="./assets/figures/qualitative_ood.png" width="2912" height="2328" alt="Predicted task progress for an in-distribution episode versus OOD injection at 25%, 50%, and 75% through the rollout, with the detected onset k marked" />
+          <figcaption>The stall shows up wherever failure starts. Inject OOD at 25%, 50%, or 75% through the episode and the progress trace follows the expected descent up to that point, then flattens out. The detector fires k replans later no matter when things break.</figcaption>
+        </figure>
+        <figure class="figure-card">
+          <img src="./assets/figures/cross-ood.png" width="3222" height="1339" alt="Cross-OOD generalization AUROC across six task/mode combinations, comparing the progress-probe detector V_tau against SAFE-MLP and SAFE-LSTM baselines on trained versus held-out OOD modes" />
+          <figcaption>It beats the state of the art. On held-out OOD modes, the progress probe (V<sub>τ</sub>) reaches 0.871 per-replan and 0.960 per-episode AUROC, ahead of SAFE-MLP (0.844 / 0.894) and SAFE-LSTM (0.641 / 0.857). It does this without ever training on failure labels or on those corruption modes.</figcaption>
+        </figure>
       </div>
 
       <p class="section-takeaway accent-green"><b>Given these results, the probe makes a practical failure
@@ -504,71 +407,6 @@
   </div>
 
   <script src="./assets/js/scrubber.js"></script>
-  <script src="./assets/js/carousel.js"></script>
-
-  <script>
-    // Progress Sidebar
-    document.addEventListener('DOMContentLoaded', () => {
-      const progressItems = document.querySelectorAll('.progress-item');
-      const progressLineFill = document.querySelector('.progress-line-fill');
-
-      // Build sections array from progress items to ensure they match
-      const sections = [];
-      progressItems.forEach(item => {
-        const id = item.dataset.section;
-        let el;
-        if (id === 'hero') {
-          el = document.querySelector('.hero-flow');
-        } else {
-          el = document.getElementById(id);
-        }
-        if (el) {
-          sections.push({ id, el });
-        }
-      });
-
-      const updateProgress = () => {
-        if (sections.length === 0) return;
-
-        const viewportHeight = window.innerHeight;
-        const activationThreshold = viewportHeight * 0.35;
-
-        // Find active section index
-        let activeIdx = 0;
-        for (let idx = 0; idx < sections.length; idx++) {
-          const rect = sections[idx].el.getBoundingClientRect();
-          if (rect.top <= activationThreshold) {
-            activeIdx = idx;
-          } else {
-            break;
-          }
-        }
-
-        // Update progress line fill based on active section
-        if (progressLineFill) {
-          const pct = (activeIdx / Math.max(sections.length - 1, 1)) * 100;
-          const clamped = Math.min(Math.max(pct, 0), 100);
-          progressLineFill.style.clipPath = `inset(0 0 ${100 - clamped}% 0)`;
-        }
-
-        // Update dot states
-        progressItems.forEach(item => {
-          const sectionId = item.dataset.section;
-          const sectionIdx = sections.findIndex(s => s.id === sectionId);
-
-          item.classList.remove('active', 'passed');
-          if (sectionIdx === activeIdx) {
-            item.classList.add('active');
-          } else if (sectionIdx >= 0 && sectionIdx < activeIdx) {
-            item.classList.add('passed');
-          }
-        });
-      };
-
-      window.addEventListener('scroll', updateProgress, { passive: true });
-      updateProgress();
-    });
-  </script>
 </body>
 
 </html>
