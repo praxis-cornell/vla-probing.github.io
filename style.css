@@ -688,30 +688,21 @@ img {
 /* The three definitions are cards stacked vertically inside the section's
    .card-surface, each carrying its accent as a top stripe plus an index
    badge in the card head. The card's lead paragraph supplies the top gap. */
+/* The three definitions read as one continuous section rather than three
+   nested cards: no shells or badges, just headed blocks separated by a rule. */
 .def-stack {
   display: grid;
-  gap: 24px;
+  gap: clamp(28px, 4vw, 44px);
   margin: 0 0 4px 0;
 }
 
-.def-head {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.def-index {
-  font-family: 'Space Grotesk', -apple-system, sans-serif;
-  font-size: var(--fs-heading);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  color: var(--accent, var(--carnelian));
+.def-block + .def-block {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: clamp(28px, 4vw, 44px);
 }
 
 /* Accent colors: set --accent on any ancestor (a figure stack or the
-   definitions shell) and it cascades down to the index/stripe below,
+   definitions shell) and it cascades down to the title/stripe below,
    regardless of which markup shape is using it. */
 /* Term 1 = gold, term 2 = blue, term 3 = violet — kept consistent between
    the definitions stack and each term's section card. Green is the
@@ -721,49 +712,15 @@ img {
 .accent-violet { --accent: var(--neon-violet); }
 .accent-green  { --accent: var(--detect-green); }
 
-/* Sits inside the section's .card-surface, so it sizes and dresses like a
-   .figure-card — full width of the card interior, same radius and padding. */
-.def-card-shell {
-  position: relative;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: 20px;
-  padding: clamp(18px, 3.5vw, 36px);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
-  transition: box-shadow 0.3s ease;
-}
-
-.def-card-shell::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 5px;
-  background: var(--accent, var(--carnelian));
-  transition: background 0.35s ease;
-}
-
-.def-card-shell:hover {
-  box-shadow: var(--shadow-lg);
-}
-
-.def-eyebrow {
-  font-family: 'Fira Code', monospace;
-  font-size: var(--fs-meta);
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
-
+/* The accent survives the loss of the card stripe as a rule under the title. */
 .def-title {
   font-family: 'Space Grotesk', -apple-system, sans-serif;
   font-size: var(--fs-title);
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0;
+  margin: 0 0 18px 0;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--accent, var(--carnelian));
 }
 
 .def-image {
@@ -773,9 +730,65 @@ img {
   background: #ffffff;
   border: 1px solid var(--border-subtle);
   border-radius: 14px;
-  padding: 16px;
+  padding: 14px;
   box-sizing: border-box;
-  margin: 0 0 22px 0;
+  margin: 0;
+}
+
+/* Figure and the red-mug story run side by side; the formal definition sits
+   below at full width, where the display equations have room. The panels are
+   wide and short (4:1 to 7:1), so the image takes the larger share. */
+.def-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 34px);
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+/* Story on the left, figure on the right — the column weights follow the
+   markup order so the figure keeps the larger share either way. */
+.def-split--text-first {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+}
+
+/* The story is prose in the page's own voice, so it takes the primary text
+   color; the definition below is set apart as a tinted panel in the block's
+   accent, so it reads as the formal statement rather than more narration. */
+.def-split .def-body {
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.def-formal {
+  font-size: var(--fs-body);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  background: var(--bg-elevated);
+  border-left: 3px solid var(--accent, var(--carnelian));
+  border-radius: 0 12px 12px 0;
+  padding: clamp(16px, 2vw, 22px) clamp(18px, 2.2vw, 26px);
+}
+
+.def-formal p {
+  margin: 0 0 12px 0;
+}
+
+.def-formal p:last-child {
+  margin-bottom: 0;
+}
+
+.def-formal em {
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+/* Wide display equations scroll on their own instead of widening the page. */
+.def-formal mjx-container[display='true'] {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
 }
 
 .def-body {
@@ -799,6 +812,16 @@ img {
   }
   .card-surface {
     border-radius: 20px;
+  }
+  /* Figure above story once the columns get too narrow to read — including
+     the text-first block, which keeps the same order as the others here. */
+  .def-split,
+  .def-split--text-first {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .def-split--text-first .def-image {
+    order: -1;
   }
 }
 

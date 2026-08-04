@@ -7,7 +7,6 @@
   <title>Decoding Task Progress from VLA Representations</title>
   <link rel="icon" href="./assets/figures/logo.png" type="image/png">
   <link rel="stylesheet" href="style.css">
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script>
     window.MathJax = {
       tex: {
@@ -16,6 +15,7 @@
       }
     };
   </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 
 <body>
@@ -85,7 +85,7 @@
       <p>Vision-language-action models (VLAs) are moving rapidly towards deployment as general-purpose manipulation
         policies, but we currently lack basic tools for understanding what these models represent internally or for
         monitoring them at runtime. Leveraging ideas from mechanistic interpretability, we probe the residual stream
-        of π₀.₅ and find that <b>task progress</b>, the normalized time remaining in a trajectory, is linearly
+        of \(\pi_{0.5}\) and find that <b>task progress</b>, the normalized time remaining in a trajectory, is linearly
         readable from the activations. We find that this signal is present in the pretrained PaliGemma backbone prior
         to training on any robot-specific data. A single linear probe generalizes to unseen tasks and varies under
         language counterfactuals when trained on multi-prompt data, but does not enable meaningful steering of the
@@ -101,53 +101,66 @@
       <p class="section-lead">
         Saying that a model "represents" a quantity is ambiguous: it can mean anything from the quantity being
         recoverable from the activations to the model actually using it to choose its actions. We separate the claim
-        into three concrete, increasingly demanding definitions.
+        into three concrete, increasingly demanding definitions. We instantiate each on a running example: the
+        target quantity \(\zeta\) is the height of a red mug above the table.
       </p>
 
       <div class="def-stack">
-        <div class="def-card-shell accent-gold">
-          <div class="def-head">
-            <span class="def-index">01</span>
-            <div>
-              <div class="def-eyebrow">Can we read it?</div>
-              <h3 class="def-title">Weak Decodability</h3>
-            </div>
+        <div class="def-block accent-gold">
+          <h3 class="def-title">Weak Decodability</h3>
+          <div class="def-split">
+            <img src="./assets/figures/weak_decode.png" alt="A linear probe reads mug height from the model's activations" class="def-image" />
+            <p class="def-body">A linear probe \(\varphi\) fit on the frozen model's activations predicts mug
+              height with low error on held-out rollouts. But if the red mug is the only target object in
+              \(\mathcal{D}_{\text{train}}\), a probe reading a correlate of its typical position scores the
+              same.</p>
           </div>
-          <img src="./assets/figures/weak_decode.png" alt="A linear probe reads mug height (task progress) from the model's activations" class="def-image" />
-          <p class="def-body">A linear probe fit on the model's activations predicts the quantity accurately on
-            held-out rollouts from the training distribution. This is the weakest claim: low error can still come
-            from a shortcut, like a probe that seems to read mug height but is really tracking the red mug
-            because it was the only target object in the training data.</p>
+          <div class="def-formal">
+            <p>A quantity \(\zeta\) is <em>weakly decodable</em> from layer \(i\) if the probe attains low risk
+              \(R(\varphi; \mathcal{D}_{\text{val}})\) on validation data drawn from the training distribution.
+              This establishes only that a linear signal correlated with \(\zeta\) can be extracted from
+              in-distribution activations; it does not rule out a spurious correlate standing in for \(\zeta\).</p>
+          </div>
         </div>
 
-        <div class="def-card-shell accent-blue">
-          <div class="def-head">
-            <span class="def-index">02</span>
-            <div>
-              <div class="def-eyebrow">Does it track the right inputs?</div>
-              <h3 class="def-title">Strong Decodability</h3>
-            </div>
+        <div class="def-block accent-blue">
+          <h3 class="def-title">Strong Decodability</h3>
+          <div class="def-split def-split--text-first">
+            <p class="def-body">To rule this out, we perturb an input factor \(\zeta\) depends on: the prompt is
+              replaced with "pick up the blue bowl," so the target height is now the bowl's. The probe is evaluated
+              unchanged on these transformed inputs. Low error under the swap is inconsistent with the red-mug
+              shortcut.</p>
+            <img src="./assets/figures/strong_decode.png" alt="Swapping the target object changes the probe's reading, confirming it tracks the instruction" class="def-image" />
           </div>
-          <img src="./assets/figures/strong_decode.png" alt="Swapping the target object changes the probe's reading, confirming it tracks the instruction" class="def-image" />
-          <p class="def-body">The same probe, without retraining, stays accurate under counterfactual changes to
-            the inputs the quantity actually depends on, like swapping the instruction to read the bowl's height instead
-            of the mug's height. A probe whose reading responds correctly to the swap can't be leaning on the red-mug
-            shortcut.</p>
+          <div class="def-formal">
+            <p>Let \(T:\mathcal{X}\to\mathcal{X}\) be a counterfactual transformation that perturbs the input
+              factors \(\zeta\) depends on, such as \(T_{\text{swap}}\) replacing the prompt \(\ell\) with
+              \(\ell'\). Then \(\zeta\) is <em>strongly decodable</em> if the same probe attains low risk on
+              \(\mathcal{D}_T=\{(z^i(T(x_k)),\, \zeta(T(x_k)))\}_{k=1}^{K}\), i.e. it generalizes to
+              counterfactually transformed inputs without retraining.</p>
+          </div>
         </div>
 
-        <div class="def-card-shell accent-violet">
-          <div class="def-head">
-            <span class="def-index">03</span>
-            <div>
-              <div class="def-eyebrow">Does the model act on it?</div>
-              <h3 class="def-title">Steerability</h3>
-            </div>
+        <div class="def-block accent-violet">
+          <h3 class="def-title">Steerability</h3>
+          <div class="def-split">
+            <img src="./assets/figures/steerability.png" alt="Editing the activation along the probe direction to steer the model's readout" class="def-image" />
+            <p class="def-body">A strongly decodable signal may still be one the policy does not condition on, so
+              we intervene rather than read. Under \(T_{\text{lift}}\), which raises the mug, we shift the
+              activation along \(w\) until the probe reads the lifted height, and measure whether the resulting
+              action distribution matches the one the true counterfactual induces.</p>
           </div>
-          <img src="./assets/figures/steerability.png" alt="Editing the probe direction to steer the model's readout of task progress" class="def-image" />
-          <p class="def-body">Even a strongly decodable signal may be one the model never consults when acting.
-            So we intervene: shift the activations along the probe's vector direction until the probe reads out the
-            counterfactual value, and check whether the policy's actions change to match, as if the counterfactual
-            were real.</p>
+          <div class="def-formal">
+            <p>Let \(\pi(z^i)\) be the action distribution when layer \(i\) holds activations \(z^i\). For a
+              counterfactual input \(T(x)\), steer along \(w\):</p>
+            <p>\[\tilde{z}^i(x) = z^i(x) + \frac{\zeta(T(x)) - \zeta(x)}{\lVert w\rVert^2}\, w\]</p>
+            <p>so that \(\varphi(\tilde{z}^i)\approx\zeta(T(x))\). With
+              \(\tilde{\pi}_k=\pi(\tilde{z}^i(x_k))\) the steered distribution and
+              \(\pi^\star_k=\pi(z^i(T(x_k)))\) the true counterfactual, the <em>steerability risk</em> is</p>
+            <p>\[R_S(\varphi;\mathcal{D},T) = \frac{1}{K}\sum_{k=1}^{K} d\!\left(\tilde{\pi}_k,\, \pi^\star_k\right)\]</p>
+            <p>for a divergence \(d\) between action distributions. Low \(R_S\) means the edit reproduces the
+              behavior the real counterfactual would have produced.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -160,23 +173,24 @@
     <div class="tagline" id="method">How We Probe</div>
     <div class="card-surface method-card">
       <div class="section-heading">A Linear Probe on the Residual Stream</div>
-      <p class="section-lead">We estimate task progress by fitting a linear probe to π₀.₅'s residual stream. The
+      <p class="section-lead">We estimate task progress by fitting a linear probe to \(\pi_{0.5}\)'s residual stream. The
         policy is left frozen, the regression targets are derived from the rollouts themselves, and the resulting
         readout requires no forward passes beyond the ones the policy already performs.</p>
 
       <img src="./assets/figures/Overview.svg?v=2" alt="Overview figure: dataset, activation extraction, probe training, and downstream tasks" class="teaser-image" />
 
       <ol class="method-steps">
-        <li><b>Data collection.</b> We roll out π₀.₅ on manipulation episodes and assign each timestep t of an
-          episode of length T the target τ<sub>t</sub> = (T − t) / T, the normalized time remaining. Targets follow
-          from the episode boundaries and require no additional annotation.</li>
+        <li><b>Data collection.</b> We roll out \(\pi_{0.5}\) on manipulation episodes and assign each timestep
+          \(t\) of an episode of length \(T\) the target \(\tau_t = (T - t)/T\), the normalized time remaining.
+          Targets follow from the episode boundaries and require no additional annotation.</li>
 
         <li><b>Activation extraction.</b> During each rollout we cache the residual-stream activation
-          z<sup>i</sup><sub>t</sub> at every layer i. Since the probe reads the residual stream rather than a
+          \(z^i_t\) at every layer \(i\). Since the probe reads the residual stream rather than a
           task-specific head, the same procedure applies to the pretrained PaliGemma backbone prior to any
           robot-specific training.</li>
 
-        <li><b>Probe training.</b> For each layer we fit φ(z<sup>i</sup>) = w<sup>T</sup>z<sup>i</sup> + b to τ. We restrict the probe to be linear so that its accuracy reflects how accessible the
+        <li><b>Probe training.</b> For each layer we fit \(\varphi(z^i) = w^\top z^i + b\) to \(\tau\). We restrict
+          the probe to be linear so that its accuracy reflects how accessible the
           quantity is in the representation, rather than the capacity of the probe itself.</li>
 
         <li><b>Evaluation.</b> The fitted probe is then assessed for weak and strong decodability, for steerability
@@ -335,7 +349,7 @@
         </figure>
         <figure class="figure-card">
           <img src="./assets/figures/cross-ood.png" width="3222" height="1339" alt="Cross-OOD generalization AUROC across six task/mode combinations, comparing the progress-probe detector V_tau against SAFE-MLP and SAFE-LSTM baselines on trained versus held-out OOD modes" />
-          <figcaption>It beats the state of the art. On held-out OOD modes, the progress probe (V<sub>τ</sub>) reaches 0.871 per-replan and 0.960 per-episode AUROC, ahead of SAFE-MLP (0.844 / 0.894) and SAFE-LSTM (0.641 / 0.857). It does this without ever training on failure labels or on those corruption modes.</figcaption>
+          <figcaption>It beats the state of the art. On held-out OOD modes, the progress probe (\(V_\tau\)) reaches 0.871 per-replan and 0.960 per-episode AUROC, ahead of SAFE-MLP (0.844 / 0.894) and SAFE-LSTM (0.641 / 0.857). It does this without ever training on failure labels or on those corruption modes.</figcaption>
         </figure>
       </div>
 
@@ -377,7 +391,7 @@
           </div>
           <h3>Code</h3>
           <p>Probe training, activation extraction, and OOD detection code for reproducing our experiments on
-            π₀.₅ and π₀.</p>
+            \(\pi_{0.5}\) and \(\pi_0\).</p>
           <a href="#" target="_blank" class="resource-link">
             View on GitHub (placeholder)
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
