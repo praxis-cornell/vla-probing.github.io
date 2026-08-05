@@ -411,15 +411,30 @@ h1, h2, h3, h4, h5, h6, .section-heading {
   display: none;
 }
 
+/* The underline takes the section's accent (via the same accent-* classes
+   the cards use), falling back to brand carnelian. */
 .tagline::after {
   content: '';
   display: block;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, var(--carnelian) 0%, rgba(179, 27, 27, 0.15) 40%, transparent 100%);
+  background: linear-gradient(90deg,
+      var(--accent, var(--carnelian)) 0%,
+      color-mix(in srgb, var(--accent, var(--carnelian)) 15%, transparent) 40%,
+      transparent 100%);
   border-radius: 2px;
   margin-bottom: 12px;
   margin-top: 24px;
+}
+
+/* The definitions section holds all three term accents, so its underline
+   walks gold → blue → violet in the order the terms appear. */
+#definitions.tagline::after {
+  background: linear-gradient(90deg,
+      var(--gold) 0%,
+      var(--blue-energy) 38%,
+      var(--neon-violet) 72%,
+      transparent 100%);
 }
 
 /* Images */
