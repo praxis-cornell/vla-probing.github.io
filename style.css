@@ -863,6 +863,25 @@ html, body {
   overflow-x: clip;
 }
 
+/* Scroll progress bar: stands in for the nav as a sense of place. The bar
+   spans the full width with a gradient whose stops scroll-progress.js
+   rebuilds from the real section positions (each stop in that section's
+   accent), and progress is revealed by clip-path — so the leading edge is
+   always the color of the section currently on screen. The static gradient
+   here is only the no-JS/pre-JS fallback. Sits below the lightbox overlay
+   (z 1000) so it doesn't float over an opened figure. */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--carnelian) 0%, var(--gold) 30%, var(--neon-violet) 65%, var(--blue-energy) 100%);
+  clip-path: inset(0 100% 0 0);
+  z-index: 900;
+  pointer-events: none;
+}
+
 /* Selection */
 ::selection {
   background: rgba(217, 45, 32, 0.25);
